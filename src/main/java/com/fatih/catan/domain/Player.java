@@ -7,54 +7,80 @@ import java.util.HashMap;
 import java.util.Random;
 
 @Entity
-@Table(name = "test_table")
+@Table(name = "player_resources")
 public class Player {
 
     enum Color {RED, BLUE, GREEN, YELLOW}
     enum Resource {WOOD, ORE, GRAIN, BRICK, WOOL}
     @Id
-    private int id;
-    @Column(name = "color")
-    private Color color;
+    @Column(name = "playerID")
+    private int playerID;
+//    @Column(name = "color")
+//    private Color color;
+//
+//    @Column(name = "hasTurn")
+//    private boolean hasTurn;
+//
+//    @Column(name = "vp")
+//    private int victoryPoints;
+//
+//    @Column(name = "devcards")
+//    private ArrayList<String> developmentCards = null;
 
-    @Column(name = "hasTurn")
-    private boolean hasTurn;
+    @Column(name = "wood")
+    private int wood;
+    @Column(name = "wool")
+    private int wool;
+    @Column(name = "brick")
+    private int brick;
+    @Column(name = "ore")
+    private int ore;
+    @Column(name = "grain")
+    private int grain;
 
-    @Column(name = "vp")
-    private int victoryPoints;
-
-//    @Column(name = "resources")
-//    private HashMap<Integer, String> resources;
-
-    @Column(name = "devcards")
-    private ArrayList<String> developmentCards;
-
-    public Player(Color color, boolean hasTurn, int victoryPoints, HashMap<Integer, String> resources, ArrayList<String> developmentCards) {
-        this.color = color;
-        this.hasTurn = hasTurn;
-        this.victoryPoints = victoryPoints;
-//        this.resources = resources;
-        this.developmentCards = developmentCards;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public boolean isHasTurn() {
-        return hasTurn;
-    }
-
-    public int getVictoryPoints() {
-        return victoryPoints;
-    }
-
-//    public HashMap<Integer, String> getResources() {
-//        return resources;
+//    public Player(Color color, boolean hasTurn) {
+//        this.color = color;
+//        this.hasTurn = hasTurn;
 //    }
 
-    public ArrayList<String> getDevelopmentCards() {
-        return developmentCards;
+    public int getPlayerID() {
+        return playerID;
+    }
+//
+//    public Color getColor() {
+//        return color;
+//    }
+//
+//    public boolean getHasTurn() {
+//        return hasTurn;
+//    }
+//
+//    public int getVictoryPoints() {
+//        return victoryPoints;
+//    }
+//
+//    public ArrayList<String> getDevelopmentCards() {
+//        return developmentCards;
+//    }
+
+    public int getWood() {
+        return wood;
+    }
+
+    public int getWool() {
+        return wool;
+    }
+
+    public int getBrick() {
+        return brick;
+    }
+
+    public int getOre() {
+        return ore;
+    }
+
+    public int getGrain() {
+        return grain;
     }
 
     public int[] rollDice() {

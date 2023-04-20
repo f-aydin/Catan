@@ -1,0 +1,10 @@
+.road {
+    z-index: 99;
+    width: 10px;
+    height: 30px;
+    border: 2px solid rgb(255, 0, 0);
+    border-top: none;
+    border-bottom: none;
+    position: absolute;
+    transform: rotate(45deg);
+  }

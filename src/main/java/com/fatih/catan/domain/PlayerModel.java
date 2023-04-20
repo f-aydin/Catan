@@ -16,18 +16,7 @@ public class PlayerModel {
         this.playerRepository = playerRepository;
     }
 
-    public List<Player> getPerson(){
+    public List<Player> getPlayer(){
         return playerRepository.findAll();
     }
-
-    public record NewPersonRequest(
-            int age,
-            String firstname
-    ){}
-
-//    public void savePerson(@RequestBody NewPersonRequest request){
-//        Player person = new Player();
-//        playerRepository.save(person);
-//    }
-
 }

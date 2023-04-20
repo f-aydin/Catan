@@ -19,14 +19,14 @@ public class PlayerController {
         this.playerModel = playerModel;
     }
 
-    @GetMapping
-    public List<Player> getPerson(){
-        return playerModel.getPerson();
+    @GetMapping("/greet")
+    public String hello(){
+        return "hello";
     }
 
-//    @PostMapping
-//    public void add(@RequestBody PlayerModel.NewPersonRequest person){
-//        playerModel.savePerson(person);
-//    }
+    @GetMapping("/playerResources")
+    public List<Player> getPlayer(){
+        return playerModel.getPlayer();
+    }
 
 }
