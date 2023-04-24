@@ -1,33 +1,34 @@
 import {HexGrid, Hexagon, Layout, Pattern } from "react-hexgrid";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { log } from "console";
 
 export function Board() {
 
     const [roadVisible, setRoadVisible] = useState(false);
-    const [playerResources, setPlayerResources] = useState();
-
-    const numbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+    const [playerResources, setPlayerResources] = useState([]);
 
     function handleClick() {
         setRoadVisible(true)
-        console.log()
       }
 
     async function getRequest(){
         const response = await fetch("http://localhost:8080/api/playerResources");
         const data = await response.json();
-        data.forEach((s: any) => writePlayerResources(s))
+        writePlayerResources(data);
     }
 
-    function writePlayerResources(s: any){
-        let template = document.getElementsByTagName("template")[0];
-        let div = template.firstElementChild?.firstElementChild?.querySelector(".resourceAmount");
-        console.log(div)
+    function writePlayerResources(playerResource : any){
+        playerResource.map((item: {
+            brick: any;
+            wool: any;
+            grain: any;
+            lumber: any;
+            ore: any; playerID: any; 
+        }) => console.log(item.playerID, item.ore, item.lumber, item.grain, item.wool, item.brick))
+    }
+
     
-    }
-
-    getRequest();
+    getRequest()
 
     return (
     <div className='App-header'>
@@ -61,11 +62,6 @@ export function Board() {
         </Layout>
         </HexGrid>
 
-        {/* template -> firstelementchild: div resourcplayer -> firstelementchild: div player ->  */}
-        <template>
-            <article>
-                <div id="resourcesPlayer">
-                player <div className="resourceAmount">0</div>
                 <img className='resourceIcon' src={require('../icons/ore.png')} alt='ore'/>
                 <img className='resourceIcon' src={require('../icons/wool.png')} alt='wool'/>
                 <img className='resourceIcon' src={require('../icons/brick.png')} alt='brick'/>
@@ -77,15 +73,8 @@ export function Board() {
                 <div className="resourceAmount">4</div>
                 <div className="resourceAmount">5</div>
                 <div className="resourceAmount">6</div>
-                </div>
-            </article>
-        </template>
-        
-        {roadVisible && <div className="rectangle"></div>}
 
-        
-        
-        
+        {roadVisible && <div className="rectangle"/>}        
     </div>  );
     
 }

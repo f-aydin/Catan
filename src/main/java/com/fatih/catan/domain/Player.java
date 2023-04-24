@@ -27,8 +27,8 @@ public class Player {
 //    @Column(name = "devcards")
 //    private ArrayList<String> developmentCards = null;
 
-    @Column(name = "wood")
-    private int wood;
+    @Column(name = "lumber")
+    private int lumber;
     @Column(name = "wool")
     private int wool;
     @Column(name = "brick")
@@ -63,8 +63,8 @@ public class Player {
 //        return developmentCards;
 //    }
 
-    public int getWood() {
-        return wood;
+    public int getLumber() {
+        return lumber;
     }
 
     public int getWool() {
