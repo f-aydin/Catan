@@ -1,5 +1,5 @@
 import {HexGrid, Hexagon, Layout, Pattern } from "react-hexgrid";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { log } from "console";
 
 export function Board() {
@@ -14,27 +14,41 @@ export function Board() {
     async function getRequest(){
         const response = await fetch("http://localhost:8080/api/playerResources");
         const data = await response.json();
-        writePlayerResources(data);
+        setPlayerResources(data)
     }
 
     function writePlayerResources(playerResource : any){
-        playerResource.map((item: {
+        
+        const listResources = playerResources.map((item: {
             brick: any;
             wool: any;
             grain: any;
             lumber: any;
-            ore: any; playerID: any; 
-        }) => console.log(item.playerID, item.ore, item.lumber, item.grain, item.wool, item.brick))
+            ore: any;
+            playerID: any; 
+        }) => 
+            <li key={item.playerID}>
+                <div>
+                <p>
+                    <b>Player: {item.playerID}</b>
+                        Wool: {item.wool}
+                        Ore: {item.ore}
+                        Brick: {item.brick}
+                        Lumber: {item.lumber}
+                        Grain: {item.grain}
+                </p>
+                </div>
+            </li>)
+        return (<><ul>{listResources}</ul></>);
     }
 
-    
-    getRequest()
+    useEffect(() => {getRequest()}, [])
 
     return (
     <div className='App-header'>
         <HexGrid width={900} height={800} viewBox="-50 -50 100 100">
         <Layout size={{ x: 12, y: 10.5 }} flat={false} spacing={0.97} origin={{ x: 0, y: 0 }}>
-            <Hexagon key={1} q={0} r={-2} s={2} fill='ore'/>
+            <Hexagon key={1} q={0} r={-2} s={2} fill='ore' />
             <Hexagon key={2} q={1} r={-2} s={1} fill='wool'/>
             <Hexagon key={3} q={2} r={-2} s={0} fill='lumber'/>
             <Hexagon key={4} q={-1} r={-1} s={2} fill='grain'/>
@@ -62,7 +76,7 @@ export function Board() {
         </Layout>
         </HexGrid>
 
-                <img className='resourceIcon' src={require('../icons/ore.png')} alt='ore'/>
+                {/* <img className='resourceIcon' src={require('../icons/ore.png')} alt='ore'/>
                 <img className='resourceIcon' src={require('../icons/wool.png')} alt='wool'/>
                 <img className='resourceIcon' src={require('../icons/brick.png')} alt='brick'/>
                 <img className='resourceIcon' src={require('../icons/wood.png')} alt='wood'/>
@@ -72,9 +86,10 @@ export function Board() {
                 <div className="resourceAmount">1</div>
                 <div className="resourceAmount">4</div>
                 <div className="resourceAmount">5</div>
-                <div className="resourceAmount">6</div>
+                <div className="resourceAmount">6</div> */}
 
         {roadVisible && <div className="rectangle"/>}        
     </div>  );
+    
     
 }
