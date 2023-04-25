@@ -29,10 +29,12 @@ public class PlayerController {
         return playerModel.getPlayer();
     }
 
-    @PostMapping("/addOne")
+    @GetMapping("/addOne")
     public Player getUpdated(){
         Integer id = 1;
         return playerModel.addOne(id);
     }
+
+
 
 }
