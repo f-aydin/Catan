@@ -22,28 +22,6 @@
   opacity: 1;
 }
 
-.resourceAmount{
-  position: relative;
-  top: 75px;
-  left: 285px;
-  margin-left: 50px;
-  float: right;
+.playerResources{
   font-size: 20px;
-}
-
-.resourceIcon{
-  float: right;
-  height: 60px;
-  width: 60px;
-  margin-left: 10px;
-}
-
-#resourcesPlayer{
-  position: relative;
-  bottom: 800px;
-}
-
-#player{
-  float: top;
-  float: right;
 }

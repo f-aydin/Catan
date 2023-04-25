@@ -1,11 +1,23 @@
 import {HexGrid, Hexagon, Layout, Pattern } from "react-hexgrid";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { log } from "console";
+import {useEffect, useState } from "react";
+
 
 export function Board() {
 
     const [roadVisible, setRoadVisible] = useState(false);
     const [playerResources, setPlayerResources] = useState([]);
+
+    async function addOne(playerResources : any){
+        const response = await fetch("http://localhost:8080/api/addOne", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                playerID: playerResources.playerID,
+                lumber: playerResources.lumber
+            })
+        })
+        
+    }
 
     function handleClick() {
         setRoadVisible(true)
@@ -17,8 +29,7 @@ export function Board() {
         setPlayerResources(data)
     }
 
-    function writePlayerResources(playerResource : any){
-        
+    function writePlayerResources(playerResources : any){
         const listResources = playerResources.map((item: {
             brick: any;
             wool: any;
@@ -27,25 +38,27 @@ export function Board() {
             ore: any;
             playerID: any; 
         }) => 
+        <div className="playerResources">
             <li key={item.playerID}>
-                <div>
                 <p>
-                    <b>Player: {item.playerID}</b>
-                        Wool: {item.wool}
-                        Ore: {item.ore}
-                        Brick: {item.brick}
-                        Lumber: {item.lumber}
+                    <b>Player: {item.playerID} </b>
+                        Wool: {item.wool} 
+                        Ore: {item.ore} 
+                        Brick: {item.brick} 
+                        Lumber: {item.lumber} 
                         Grain: {item.grain}
                 </p>
-                </div>
-            </li>)
-        return (<><ul>{listResources}</ul></>);
+            </li>
+            </div>)
+        return <ul>{listResources}</ul>;
     }
 
-    useEffect(() => {getRequest()}, [])
+    useEffect(() => {getRequest()})
 
     return (
+        
     <div className='App-header'>
+        {writePlayerResources(playerResources)}
         <HexGrid width={900} height={800} viewBox="-50 -50 100 100">
         <Layout size={{ x: 12, y: 10.5 }} flat={false} spacing={0.97} origin={{ x: 0, y: 0 }}>
             <Hexagon key={1} q={0} r={-2} s={2} fill='ore' />
@@ -58,7 +71,7 @@ export function Board() {
             <Hexagon key={8} q={-2} r={0} s={2} fill='grain'/>
             <Hexagon key={9} q={-1} r={0} s={1} fill='lumber'/>
             <Hexagon key={10} onClick={handleClick} q={0} r={0} s={0} fill='desert'/>
-            <Hexagon key={11} q={1} r={0} s={-1} fill='lumber'/>
+            <Hexagon key={11} onClick={addOne} q={1} r={0} s={-1} fill='lumber'/>
             <Hexagon key={12} q={2} r={0} s={-2} fill='ore'/>
             <Hexagon key={13} q={-2} r={1} s={1} fill='lumber'/>
             <Hexagon key={14} q={-1} r={1} s={0} fill='ore'/>
@@ -76,20 +89,9 @@ export function Board() {
         </Layout>
         </HexGrid>
 
-                {/* <img className='resourceIcon' src={require('../icons/ore.png')} alt='ore'/>
-                <img className='resourceIcon' src={require('../icons/wool.png')} alt='wool'/>
-                <img className='resourceIcon' src={require('../icons/brick.png')} alt='brick'/>
-                <img className='resourceIcon' src={require('../icons/wood.png')} alt='wood'/>
-                <img className='resourceIcon' src={require('../icons/grain.png')} alt='grain'/>
-                
-                <div className="resourceAmount">2</div>
-                <div className="resourceAmount">1</div>
-                <div className="resourceAmount">4</div>
-                <div className="resourceAmount">5</div>
-                <div className="resourceAmount">6</div> */}
-
         {roadVisible && <div className="rectangle"/>}        
-    </div>  );
+    </div>  
+    );
     
     
 }

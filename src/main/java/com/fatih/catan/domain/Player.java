@@ -83,6 +83,30 @@ public class Player {
         return grain;
     }
 
+    public void setPlayerID(int playerID) {
+        this.playerID = playerID;
+    }
+
+    public void setLumber(int lumber) {
+        this.lumber = lumber;
+    }
+
+    public void setWool(int wool) {
+        this.wool = wool;
+    }
+
+    public void setBrick(int brick) {
+        this.brick = brick;
+    }
+
+    public void setOre(int ore) {
+        this.ore = ore;
+    }
+
+    public void setGrain(int grain) {
+        this.grain = grain;
+    }
+
     public int[] rollDice() {
         Random rand = new Random();
         return new int[]{rand.nextInt(1, 7), rand.nextInt(1, 7)};

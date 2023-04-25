@@ -19,4 +19,10 @@ public class PlayerModel {
     public List<Player> getPlayer(){
         return playerRepository.findAll();
     }
+
+    public Player addOne(Integer id){
+        Player player = playerRepository.findById(id).get();
+        player.setLumber(player.getLumber() + 1);
+        return playerRepository.save(player);
+    }
 }
