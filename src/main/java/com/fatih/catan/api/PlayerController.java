@@ -30,11 +30,12 @@ public class PlayerController {
     }
 
     @GetMapping("/addOne")
-    public Player getUpdated(){
-        Integer id = 1;
-        return playerModel.addOne(id);
+    public List<Player> getUpdated(){
+        return playerModel.addOne();
     }
 
-
-
+    @PostMapping("/addOneByDice")
+    public List<Player> addResources(@RequestBody Integer dice){
+        return playerModel.addResources(dice);
+    }
 }

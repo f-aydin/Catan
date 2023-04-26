@@ -15,17 +15,6 @@ public class Player {
     @Id
     @Column(name = "playerID")
     private int playerID;
-//    @Column(name = "color")
-//    private Color color;
-//
-//    @Column(name = "hasTurn")
-//    private boolean hasTurn;
-//
-//    @Column(name = "vp")
-//    private int victoryPoints;
-//
-//    @Column(name = "devcards")
-//    private ArrayList<String> developmentCards = null;
 
     @Column(name = "lumber")
     private int lumber;
@@ -38,30 +27,9 @@ public class Player {
     @Column(name = "grain")
     private int grain;
 
-//    public Player(Color color, boolean hasTurn) {
-//        this.color = color;
-//        this.hasTurn = hasTurn;
-//    }
-
     public int getPlayerID() {
         return playerID;
     }
-//
-//    public Color getColor() {
-//        return color;
-//    }
-//
-//    public boolean getHasTurn() {
-//        return hasTurn;
-//    }
-//
-//    public int getVictoryPoints() {
-//        return victoryPoints;
-//    }
-//
-//    public ArrayList<String> getDevelopmentCards() {
-//        return developmentCards;
-//    }
 
     public int getLumber() {
         return lumber;
@@ -83,10 +51,6 @@ public class Player {
         return grain;
     }
 
-    public void setPlayerID(int playerID) {
-        this.playerID = playerID;
-    }
-
     public void setLumber(int lumber) {
         this.lumber = lumber;
     }
@@ -105,11 +69,6 @@ public class Player {
 
     public void setGrain(int grain) {
         this.grain = grain;
-    }
-
-    public int[] rollDice() {
-        Random rand = new Random();
-        return new int[]{rand.nextInt(1, 7), rand.nextInt(1, 7)};
     }
 }
 
