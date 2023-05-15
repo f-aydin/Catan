@@ -41,12 +41,12 @@ export function Board() {
         <div className="playerResources">
           <li key={item.playerID}>
             <p>
-              <b>Player: {item.playerID} </b>
-              Wool: {item.wool + " "}
-              Ore: {item.ore + " "}
-              Brick: {item.brick + " "}
-              Lumber: {item.lumber + " "}
-              Grain: {item.grain + " "}
+              <b>Player: {item.playerID + " > "} </b>
+              Wool: {item.wool + " | "}
+              Ore: {item.ore + " | "}
+              Brick: {item.brick + " | "}
+              Lumber: {item.lumber + " | "}
+              Grain: {item.grain}
             </p>
           </li>
         </div>
@@ -59,11 +59,27 @@ export function Board() {
     getRequest();
   }, []);
 
+  function changeOpacity(){
+    const button = document.getElementById("12");
+    if(button != null){
+      button.style.setProperty('opacity', '1');
+      button.style.setProperty('background-color', 'red')
+    }
+  }
+
   return (
     <div className="App-header">
+      <button
+        onClick={() => {
+          addByDiceRoll();
+        }}
+      >
+        Roll Dice
+      </button>
+
+      {dice}
+      
       {writePlayerResources(playerResources)}
-
-
 
       <HexGrid width={900} height={800} viewBox="-50 -50 100 100">
         <Layout
@@ -163,18 +179,39 @@ export function Board() {
           />
         </Layout>
       </HexGrid>
-      <button className="row1"/>
 
-      <button
-        onClick={() => {
-          addByDiceRoll();
-        }}
-      >
-        Roll Dice
-      </button>
+      <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
+      <button className="row1" style={{ ["--fromright" as any]: "510px" }} />
+      <button className="row1" style={{ ["--fromright" as any]: "710px" }} />
 
+      <button className="row2" style={{ ["--fromright" as any]: "350px" }} />
+      <button className="row2" style={{ ["--fromright" as any]: "550px" }} />
+      <button className="row2" style={{ ["--fromright" as any]: "750px" }} />
+      <button className="row2" style={{ ["--fromright" as any]: "950px" }} />
 
-      {dice}
+      <button className="row3" style={{ ["--fromright" as any]: "510px" }} />
+      <button className="row3" style={{ ["--fromright" as any]: "710px" }} />
+      <button className="row3" style={{ ["--fromright" as any]: "910px" }} />
+      <button className="row3" style={{ ["--fromright" as any]: "1110px" }} />
+
+      <button className="row4" style={{ ["--fromright" as any]: "600px" }} />
+      <button className="row4" id="12" style={{ ["--fromright" as any]: "790px" }} onClick={changeOpacity}/>
+      <button className="row4" style={{ ["--fromright" as any]: "990px" }} />
+      <button className="row4" style={{ ["--fromright" as any]: "1190px" }} />
+      <button className="row4" style={{ ["--fromright" as any]: "1390px" }} />
+
+      <button className="row5" style={{ ["--fromright" as any]: "800px" }} />
+      <button className="row5" style={{ ["--fromright" as any]: "990px" }} />
+      <button className="row5" style={{ ["--fromright" as any]: "1190px" }} />
+      <button className="row5" style={{ ["--fromright" as any]: "1390px" }} />
+      <button className="row5" style={{ ["--fromright" as any]: "1590px" }} />
+
+      <button className="row6" style={{ ["--fromright" as any]: "910px" }} />
+      <button className="row6" style={{ ["--fromright" as any]: "1110px" }} />
+      <button className="row6" style={{ ["--fromright" as any]: "1310px" }} />
+      <button className="row6" style={{ ["--fromright" as any]: "1510px" }} />
+      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} />
+
 
       {roadVisible && <div className="rectangle" />}
     </div>

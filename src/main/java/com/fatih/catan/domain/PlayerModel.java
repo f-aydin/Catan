@@ -19,13 +19,13 @@ public class PlayerModel {
         return playerRepository.findAll();
     }
 
-    public List<Player> addOne(){
-        List<Player> players = playerRepository.findAll();
-        for(Player player : players){
-            player.setLumber(player.getLumber() + 1);
-        }
-        return playerRepository.saveAll(players);
-    }
+//    public List<Player> addOne(){
+//        List<Player> players = playerRepository.findAll();
+//        for(Player player : players){
+//            player.setLumber(player.getLumber() + 1);
+//        }
+//        return playerRepository.saveAll(players);
+//    }
 
     public List<Player> addResources(Integer dice) {
         List<Player> players = playerRepository.findAll();
