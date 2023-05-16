@@ -9,9 +9,10 @@ create table player_resources (
 
 insert into player_resources
 	values
-    (1, 2, 4, 6, 8, 10),
-    (2, 1, 1, 1, 1, 1),
-    (3, 12, 4, 5, 2, 1),
-    (4, 3, 6, 2, 3, 0);
+    (1, 0, 0, 0, 0, 0),
+    (2, 0, 0, 0, 0, 0),
+    (3, 0, 0, 0, 0, 0),
+    (4, 0, 0, 0, 0, 0);
 
 select * from player_resources;
+drop table player_resources;

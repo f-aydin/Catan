@@ -4,11 +4,32 @@ import com.fatih.catan.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PlayerModel {
     private final PlayerRepository playerRepository;
+    private final Tile[] tiles = new Tile[] {
+            new Tile(10, Resource.ORE),
+            new Tile(2, Resource.WOOL),
+            new Tile(9, Resource.LUMBER),
+            new Tile(12, Resource.GRAIN),
+            new Tile(6, Resource.BRICK),
+            new Tile(4, Resource.WOOL),
+            new Tile(10, Resource.BRICK),
+            new Tile(9, Resource.GRAIN),
+            new Tile(11, Resource.LUMBER),
+            new Tile(3, Resource.LUMBER),
+            new Tile(8, Resource.ORE),
+            new Tile(8, Resource.LUMBER),
+            new Tile(3, Resource.ORE),
+            new Tile(4, Resource.GRAIN),
+            new Tile(5, Resource.WOOL),
+            new Tile(5, Resource.BRICK),
+            new Tile(6, Resource.GRAIN),
+            new Tile(11, Resource.WOOL)
+    };
 
     @Autowired
     public PlayerModel(PlayerRepository playerRepository) {
@@ -21,31 +42,41 @@ public class PlayerModel {
 
     public List<Player> addResources(Integer dice) {
         List<Player> players = playerRepository.findAll();
-        if(areDiceRolledForWool(dice)){
-            for(Player player : players){
-                player.setWool(player.getWool() + 1);
+        List<Tile> tiles = Arrays.stream(this.tiles).filter(tile -> tile.getNumber() == dice).toList();
+
+        for(Tile tile: tiles) {
+            List<Player> playerThatReceivesResources = players.stream().filter(player -> player.hasBuilding(tile)).toList();
+            for(Player player: playerThatReceivesResources) {
+                player.addResource(tile.getResource());
             }
         }
-        if(areDiceRolledForOre(dice)){
-            for(Player player : players){
-                player.setOre(player.getOre() + 1);
-            }
-        }
-        if(areDiceRolledForLumber(dice)){
-            for(Player player : players){
-                player.setLumber(player.getLumber() + 1);
-            }
-        }
-        if(areDiceRolledForGrain(dice)){
-            for(Player player : players){
-                player.setGrain(player.getGrain() + 1);
-            }
-        }
-        if(areDiceRolledForBrick(dice)){
-            for(Player player : players){
-                player.setBrick(player.getBrick() + 1);
-            }
-        }
+//
+//
+//        if(areDiceRolledForWool(dice)){
+//            for(Player player : players){
+//                player.setWool(player.getWool() + 1);
+//            }
+//        }
+//        if(areDiceRolledForOre(dice)){
+//            for(Player player : players){
+//                player.setOre(player.getOre() + 1);
+//            }
+//        }
+//        if(areDiceRolledForLumber(dice)){
+//            for(Player player : players){
+//                player.setLumber(player.getLumber() + 1);
+//            }
+//        }
+//        if(areDiceRolledForGrain(dice)){
+//            for(Player player : players){
+//                player.setGrain(player.getGrain() + 1);
+//            }
+//        }
+//        if(areDiceRolledForBrick(dice)){
+//            for(Player player : players){
+//                player.setBrick(player.getBrick() + 1);
+//            }
+//        }
         return playerRepository.saveAll(players);
     }
 

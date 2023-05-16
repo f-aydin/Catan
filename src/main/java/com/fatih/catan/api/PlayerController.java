@@ -29,7 +29,6 @@ public class PlayerController {
         return playerModel.getPlayer();
     }
 
-
     @PostMapping("/addOneByDice")
     public List<Player> addResources(@RequestBody Integer dice){
         return playerModel.addResources(dice);

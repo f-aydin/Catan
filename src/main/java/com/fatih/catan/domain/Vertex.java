@@ -32,8 +32,4 @@ public class Vertex {
         this.edge2 = edge2;
         this.edge3 = edge3;
     }
-
-
-
-
 }
