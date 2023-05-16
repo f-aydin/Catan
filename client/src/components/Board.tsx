@@ -59,11 +59,11 @@ export function Board() {
     getRequest();
   }, []);
 
-  function changeOpacity(){
+  function changeOpacity() {
     const button = document.getElementById("12");
-    if(button != null){
-      button.style.setProperty('opacity', '1');
-      button.style.setProperty('background-color', 'red')
+    if (button != null) {
+      button.style.setProperty("opacity", "1");
+      button.style.setProperty("background-color", "red");
     }
   }
 
@@ -78,7 +78,7 @@ export function Board() {
       </button>
 
       {dice}
-      
+
       {writePlayerResources(playerResources)}
 
       <HexGrid width={900} height={800} viewBox="-50 -50 100 100">
@@ -180,7 +180,7 @@ export function Board() {
         </Layout>
       </HexGrid>
 
-      <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
+      {/* <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
       <button className="row1" style={{ ["--fromright" as any]: "510px" }} />
       <button className="row1" style={{ ["--fromright" as any]: "710px" }} />
 
@@ -210,8 +210,7 @@ export function Board() {
       <button className="row6" style={{ ["--fromright" as any]: "1110px" }} />
       <button className="row6" style={{ ["--fromright" as any]: "1310px" }} />
       <button className="row6" style={{ ["--fromright" as any]: "1510px" }} />
-      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} />
-
+      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} /> */}
 
       {roadVisible && <div className="rectangle" />}
     </div>

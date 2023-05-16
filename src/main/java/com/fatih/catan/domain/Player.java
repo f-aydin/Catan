@@ -2,10 +2,6 @@ package com.fatih.catan.domain;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-
 @Entity
 @Table(name = "player_resources")
 public class Player {

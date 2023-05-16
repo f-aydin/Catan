@@ -29,10 +29,6 @@ public class PlayerController {
         return playerModel.getPlayer();
     }
 
-//    @GetMapping("/addOne")
-//    public List<Player> getUpdated(){
-//        return playerModel.addOne();
-//    }
 
     @PostMapping("/addOneByDice")
     public List<Player> addResources(@RequestBody Integer dice){
