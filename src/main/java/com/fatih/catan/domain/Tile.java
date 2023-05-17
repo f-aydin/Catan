@@ -1,29 +1,39 @@
 package com.fatih.catan.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "building_on_tiles")
 public class Tile {
-    private final int number;
-    private final Resource resource;
-    private final List<Edge> edges;
+    @Id
+    @Column(name = "tileID")
+    private final int tileID;
 
-    public Tile(int number, Resource resource) {
-        this.number = number;
+    @Column(name = "token")
+    private final int token;
+
+    @Column(name = "resourceType")
+    private final Resource resource;
+
+    public Tile(int tileID, int token, Resource resource) {
+        this.tileID = tileID;
+        this.token = token;
         this.resource = resource;
-        edges = new ArrayList<>();
     }
 
+    public int getTileID() {
+        return tileID;
+    }
 
-    public int getNumber() {
-        return number;
+    public int getToken() {
+        return token;
     }
 
     public Resource getResource() {
         return resource;
     }
 
-    public void addEdge(Edge edge){
-        edges.add(edge);
-    }
 }

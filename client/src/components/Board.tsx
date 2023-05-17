@@ -115,15 +115,7 @@ export function Board() {
           <Hexagon key={9} q={-1} r={0} s={1} data={11} fill="lumber">
             <Text>11</Text>
           </Hexagon>
-          <Hexagon
-            key={10}
-            onClick={handleClick}
-            q={0}
-            r={0}
-            s={0}
-            data={7}
-            fill="desert"
-          >
+          <Hexagon key={10} q={0} r={0} s={0} data={7} fill="desert">
             <Text>7</Text>
           </Hexagon>
           <Hexagon key={11} q={1} r={0} s={-1} data={3} fill="lumber">
@@ -180,7 +172,7 @@ export function Board() {
         </Layout>
       </HexGrid>
 
-      {/* <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
+      <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
       <button className="row1" style={{ ["--fromright" as any]: "510px" }} />
       <button className="row1" style={{ ["--fromright" as any]: "710px" }} />
 
@@ -195,7 +187,12 @@ export function Board() {
       <button className="row3" style={{ ["--fromright" as any]: "1110px" }} />
 
       <button className="row4" style={{ ["--fromright" as any]: "600px" }} />
-      <button className="row4" id="12" style={{ ["--fromright" as any]: "790px" }} onClick={changeOpacity}/>
+      <button
+        className="row4"
+        id="12"
+        style={{ ["--fromright" as any]: "790px" }}
+        onClick={changeOpacity}
+      />
       <button className="row4" style={{ ["--fromright" as any]: "990px" }} />
       <button className="row4" style={{ ["--fromright" as any]: "1190px" }} />
       <button className="row4" style={{ ["--fromright" as any]: "1390px" }} />
@@ -210,9 +207,9 @@ export function Board() {
       <button className="row6" style={{ ["--fromright" as any]: "1110px" }} />
       <button className="row6" style={{ ["--fromright" as any]: "1310px" }} />
       <button className="row6" style={{ ["--fromright" as any]: "1510px" }} />
-      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} /> */}
+      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} />
 
-      {roadVisible && <div className="rectangle" />}
+      {/* {roadVisible && <div className="rectangle" />} */}
     </div>
   );
 }

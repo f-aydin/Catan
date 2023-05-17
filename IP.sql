@@ -7,6 +7,18 @@ create table player_resources (
     grain INT
 );
 
+create table player_buildings (
+	playerID INT PRIMARY KEY,
+    tileID INT,
+    buildingType ENUM ('SETTLEMENT', 'CITY')
+);
+
+create table building_on_tiles (
+	tileID INT PRIMARY KEY,
+	token INT,
+    resourceType ENUM('LUMBER', 'GRAIN', 'ORE', 'BRICK', 'WOOL')
+);
+
 insert into player_resources
 	values
     (1, 0, 0, 0, 0, 0),
@@ -15,4 +27,4 @@ insert into player_resources
     (4, 0, 0, 0, 0, 0);
 
 select * from player_resources;
-drop table player_resources;
+drop table building_on_tiles;

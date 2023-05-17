@@ -1,16 +1,18 @@
 package com.fatih.catan.domain;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "player_resources")
+
 public class Player {
 
-    private final ArrayList<Building> buildings = new ArrayList<>() {
-
-    };
-
+    @OneToMany
+    @JoinColumn(name = "playerID")
+    private List<Building> buildings = Arrays.asList(new Building(1, BuildingType.SETTLEMENT), new Building(2, BuildingType.SETTLEMENT));
 
     public void addResource(Resource resource) {
         switch(resource) {
@@ -37,7 +39,6 @@ public class Player {
         return buildings.stream().anyMatch(building -> building.isOnTile(tile));
     }
 
-    enum Color {RED, BLUE, GREEN, YELLOW}
     @Id
     @Column(name = "playerID")
     private int playerID;
