@@ -27,4 +27,7 @@ insert into player_resources
     (4, 0, 0, 0, 0, 0);
 
 select * from player_resources;
+
+drop table player_resources;
+drop table player_buildings;
 drop table building_on_tiles;

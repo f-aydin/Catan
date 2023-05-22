@@ -9,37 +9,46 @@ import java.util.List;
 @Table(name = "player_buildings")
 public class Building {
     @Id
-    @Column(name = "playerID")
-    private int playerOwnerID;
-
-    @Column(name = "buildingType")
-    private BuildingType type;
+    @Column(name = "id")
+    private int id;
 
     @ManyToMany
-    @JoinColumn(name = "tileID")
-    private List<Tile> tiles = Arrays.asList(new Tile(1, 10, Resource.ORE), new Tile(2, 2, Resource.WOOL));
+    @JoinColumn()
+    private List<Tile> tiles;
 
-    public Building(int playerOwnerID, BuildingType type) {
-        this.playerOwnerID = playerOwnerID;
-        this.type = type;
+    public Building(int id) {
+        this.id = id;
     }
 
-    public Building(int playerOwnerID, List<Tile> tiles) {
-        this.playerOwnerID = playerOwnerID;
+    public Building(List<Tile> tiles) {
         this.tiles = tiles;
     }
 
-    public Building(int playerOwnerID, BuildingType type, List<Tile> tiles) {
-        this.playerOwnerID = playerOwnerID;
-        this.type = type;
+    public Building(int id, List<Tile> tiles) {
+        this.id = id;
         this.tiles = tiles;
     }
 
-    public int getPlayerOwnerID() {
-        return playerOwnerID;
+    public int getId() {
+        return id;
     }
 
     public boolean isOnTile(Tile tile) {
         return tiles.contains(tile);
+    }
+
+    public void buildOnTile(Tile tile1){
+        tiles.add(tile1);
+    }
+
+    public void buildOnTile(Tile tile1, Tile tile2){
+        tiles.add(tile1);
+        tiles.add(tile2);
+    }
+
+    public void buildOnTile(Tile tile1, Tile tile2, Tile tile3){
+        tiles.add(tile1);
+        tiles.add(tile2);
+        tiles.add(tile3);
     }
 }

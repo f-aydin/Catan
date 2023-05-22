@@ -2,7 +2,7 @@ package com.fatih.catan.domain;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,15 +11,15 @@ import java.util.List;
 public class Player {
 
     @OneToMany
-    @JoinColumn(name = "playerID")
-    private List<Building> buildings = Arrays.asList(new Building(1, BuildingType.SETTLEMENT), new Building(2, BuildingType.SETTLEMENT));
+    @JoinColumn()
+    private List<Building> buildings = new ArrayList<>();
 
     public void addResource(Resource resource) {
         switch(resource) {
-
             case LUMBER -> {
                 lumber++;
             }
+
             case ORE -> {
                 ore++;
             }
@@ -53,6 +53,18 @@ public class Player {
     private int ore;
     @Column(name = "grain")
     private int grain;
+
+    public Player() {
+    }
+
+    public Player(int playerID) {
+        this.playerID = playerID;
+    }
+
+    public Player(int playerID, List<Building> buildings) {
+        this.playerID = playerID;
+        this.buildings = buildings;
+    }
 
     public int getPlayerID() {
         return playerID;
@@ -97,5 +109,10 @@ public class Player {
     public void setGrain(int grain) {
         this.grain = grain;
     }
+
+    public void addBuilding(Building building){
+        buildings.add(building);
+    }
+
 }
 

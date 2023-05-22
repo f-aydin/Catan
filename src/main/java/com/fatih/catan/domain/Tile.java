@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "building_on_tiles")
 public class Tile {
@@ -36,4 +38,23 @@ public class Tile {
         return resource;
     }
 
+    @Override
+    public boolean equals(Object tile){
+        if(tile == this){
+            return true;
+        }
+
+        if(!(tile instanceof Tile t)){
+            return false;
+        }
+
+        return tileID == t.tileID &&
+                token == t.token &&
+                resource.equals(t.resource);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tileID, token, resource);
+    }
 }
