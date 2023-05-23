@@ -25,12 +25,17 @@ public class PlayerController {
     }
 
     @GetMapping("/playerResources")
-    public List<Player> getPlayer(){
-        return playerService.getPlayer();
+    public List<Player> getPlayers(){
+        return playerService.getPlayers();
     }
 
     @PostMapping("/addOneByDice")
     public List<Player> addResources(@RequestBody Integer dice){
         return playerService.addResources(dice);
+    }
+
+    @PostMapping("/buildSettlement")
+    public List<Player> buildSettlement(@RequestBody Integer playerID, @RequestBody Integer tile1, @RequestBody Integer tile2, @RequestBody Integer tile3){
+        return playerService.buildSettlement(playerID, tile1, tile2, tile3);
     }
 }

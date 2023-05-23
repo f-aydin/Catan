@@ -16,25 +16,14 @@ public class PlayerService {
         this.playerRepository = playerRepository;
     }
 
-    public List<Player> getPlayer(){
+    public List<Player> getPlayers(){
         return playerRepository.findAll();
     }
 
     public List<Player> addResources(Integer dice) {
         Board board = new Board();
 
-//        List<Player> players = playerRepository.findAll();
-
-        Player player1 = new Player(1);
-        Player player2 = new Player(2);
-
-        Building building1 = new Building(1, Arrays.asList(new Tile(1, 10, Resource.ORE), new Tile(2, 2, Resource.WOOL), new Tile(5,6, Resource.BRICK)));
-        Building building2 = new Building(2, Arrays.asList(new Tile(8, 9, Resource.GRAIN), new Tile(9, 11, Resource.LUMBER), new Tile(13,8, Resource.LUMBER)));
-
-        player1.addBuilding(building1);
-        player2.addBuilding(building2);
-
-        List<Player> players = Arrays.asList(player1, player2);
+        List<Player> players = playerRepository.findAll();
 
         List<Tile> tiles = Arrays.stream(board.getTiles()).filter(tile -> tile.getToken() == dice).toList();
         List<Player> playerThatReceivesResources;
@@ -42,19 +31,20 @@ public class PlayerService {
         for(Tile tile: tiles) {
             playerThatReceivesResources =  players.stream().filter(player -> player.hasBuilding(tile)).toList();
             for(Player player: playerThatReceivesResources) {
-                player.addResource(tile.getResource());
-                System.out.println(player.getPlayerID());
-                System.out.println(player.getLumber());
-                System.out.println(player.getGrain());
-                System.out.println(player.getBrick());
-                System.out.println(player.getOre());
-                System.out.println(player.getWool());
-//                playerRepository.save(player);
+                player.addResource(tile.getResourceType());
+                playerRepository.saveAll(playerThatReceivesResources);
             }
         }
 
         return playerRepository.findAll();
+    }
 
-//        return playerRepository.saveAll(playerThatReceivesResources);
+    public List<Player> buildSettlement(Integer playerID, Integer tile1, Integer tile2, Integer tile3){
+        Board board = new Board();
+        Player player = playerRepository.findById(playerID).orElseThrow();
+        List<Tile> tiles = List.of(board.getSpecificTile(tile1), board.getSpecificTile(tile2), board.getSpecificTile(tile3));
+        Building building = new Building(tiles);
+        player.addBuilding(building);
+        return playerRepository.saveAll(playerRepository.findAll());
     }
 }

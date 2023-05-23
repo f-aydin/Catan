@@ -1,29 +1,24 @@
 package com.fatih.catan.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "building_on_tiles")
 public class Tile {
     @Id
-    @Column(name = "tileID")
-    private final int tileID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int tileID;
+    private int token;
+    private Resource resourceType;
 
-    @Column(name = "token")
-    private final int token;
+    public Tile() {
+    }
 
-    @Column(name = "resourceType")
-    private final Resource resource;
-
-    public Tile(int tileID, int token, Resource resource) {
+    public Tile(int tileID, int token, Resource resourceType) {
         this.tileID = tileID;
         this.token = token;
-        this.resource = resource;
+        this.resourceType = resourceType;
     }
 
     public int getTileID() {
@@ -34,8 +29,8 @@ public class Tile {
         return token;
     }
 
-    public Resource getResource() {
-        return resource;
+    public Resource getResourceType() {
+        return resourceType;
     }
 
     @Override
@@ -50,11 +45,11 @@ public class Tile {
 
         return tileID == t.tileID &&
                 token == t.token &&
-                resource.equals(t.resource);
+                resourceType.equals(t.resourceType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tileID, token, resource);
+        return Objects.hash(tileID, token, resourceType);
     }
 }

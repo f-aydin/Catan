@@ -2,35 +2,36 @@ package com.fatih.catan.domain;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Table(name = "player_buildings")
 public class Building {
     @Id
-    @Column(name = "id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int buildingID;
+    private BuildingType buildingType;
 
-    @ManyToMany
-    @JoinColumn()
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<Tile> tiles;
 
-    public Building(int id) {
-        this.id = id;
+    public Building() {
+    }
+
+    public Building(int buildingID) {
+        this.buildingID = buildingID;
     }
 
     public Building(List<Tile> tiles) {
         this.tiles = tiles;
     }
 
-    public Building(int id, List<Tile> tiles) {
-        this.id = id;
+    public Building(int buildingID, List<Tile> tiles) {
+        this.buildingID = buildingID;
         this.tiles = tiles;
     }
 
-    public int getId() {
-        return id;
+    public int getBuildingID() {
+        return buildingID;
     }
 
     public boolean isOnTile(Tile tile) {

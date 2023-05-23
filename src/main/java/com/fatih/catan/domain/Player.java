@@ -6,53 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "player_resources")
-
 public class Player {
-
-    @OneToMany
-    @JoinColumn()
-    private List<Building> buildings = new ArrayList<>();
-
-    public void addResource(Resource resource) {
-        switch(resource) {
-            case LUMBER -> {
-                lumber++;
-            }
-
-            case ORE -> {
-                ore++;
-            }
-            case GRAIN -> {
-                grain++;
-            }
-            case BRICK -> {
-                brick++;
-            }
-            case WOOL -> {
-                wool++;
-            }
-        }
-    }
-
-    public boolean hasBuilding(Tile tile) {
-        return buildings.stream().anyMatch(building -> building.isOnTile(tile));
-    }
-
     @Id
-    @Column(name = "playerID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int playerID;
-
-    @Column(name = "lumber")
     private int lumber;
-    @Column(name = "wool")
     private int wool;
-    @Column(name = "brick")
     private int brick;
-    @Column(name = "ore")
     private int ore;
-    @Column(name = "grain")
     private int grain;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Building> buildings = new ArrayList<>();
 
     public Player() {
     }
@@ -109,6 +73,32 @@ public class Player {
     public void setGrain(int grain) {
         this.grain = grain;
     }
+
+    public void addResource(Resource resource) {
+        switch(resource) {
+            case LUMBER -> {
+                lumber++;
+            }
+
+            case ORE -> {
+                ore++;
+            }
+            case GRAIN -> {
+                grain++;
+            }
+            case BRICK -> {
+                brick++;
+            }
+            case WOOL -> {
+                wool++;
+            }
+        }
+    }
+
+    public boolean hasBuilding(Tile tile) {
+        return buildings.stream().anyMatch(building -> building.isOnTile(tile));
+    }
+
 
     public void addBuilding(Building building){
         buildings.add(building);

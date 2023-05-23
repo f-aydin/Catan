@@ -5,6 +5,10 @@ export function Board() {
   const [roadVisible, setRoadVisible] = useState(false);
   const [playerResources, setPlayerResources] = useState([]);
   const [dice, setDice] = useState(Number);
+  const [playerID, setPlayerID] = useState("");
+  const [tile1, setTile1] = useState("");
+  const [tile2, setTile2] = useState("");
+  const [tile3, setTile3] = useState("");
 
   async function addByDiceRoll() {
     const diceRoll =
@@ -67,6 +71,21 @@ export function Board() {
     }
   }
 
+  async function buildSettlement() {
+    const response = await fetch("http://localhost:8080/api/buildSettlement", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerID: Number(playerID),
+        tile1: Number(tile1),
+        tile2: Number(tile2),
+        tile3: Number(tile3)
+      })
+    });
+    const data = await response.json();
+    console.log(data);
+  }
+
   return (
     <div className="App-header">
       <button
@@ -76,9 +95,21 @@ export function Board() {
       >
         Roll Dice
       </button>
-
       {dice}
-
+      <div>
+        <input size={1} placeholder={"ID"} value={playerID} onChange={(e) => setPlayerID(e.target.value)}/>
+        <input size={1} placeholder={"Tile 1"} value={tile1} onChange={(e) => setTile1(e.target.value)} />
+        <input size={1} placeholder={"Tile 2"} value={tile2} onChange={(e) => setTile2(e.target.value)}/>
+        <input size={1} placeholder={"Tile 3"} value={tile3} onChange={(e) => setTile3(e.target.value)}/>
+        <button
+          id="buildButton"
+          onClick={() => {
+            buildSettlement();
+          }}
+        >
+          Build!
+        </button>
+      </div>
       {writePlayerResources(playerResources)}
 
       <HexGrid width={900} height={800} viewBox="-50 -50 100 100">
