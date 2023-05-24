@@ -2,6 +2,7 @@ package com.fatih.catan.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,10 +10,8 @@ public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int buildingID;
-    private BuildingType buildingType;
-
     @ManyToMany(cascade = {CascadeType.ALL})
-    private List<Tile> tiles;
+    private List<Tile> tiles = new ArrayList<>();
 
     public Building() {
     }

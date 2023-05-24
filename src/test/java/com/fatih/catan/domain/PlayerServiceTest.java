@@ -1,49 +1,57 @@
 package com.fatih.catan.domain;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PlayerServiceTest {
-    @Autowired
-    private JpaRepository<Player, Integer> playerRepository;
 
     @Test
     public void filterTilesBasedOnNumber(){
         int dice = 6;
-        Tile[] tiles = new Tile[] {
-                new Tile(1, 10, Resource.ORE),
-                new Tile(2, 2, Resource.WOOL),
-                new Tile(3, 9, Resource.LUMBER),
-                new Tile(4, 12, Resource.GRAIN),
-                new Tile(5, 6, Resource.BRICK),
-                new Tile(6, 4, Resource.WOOL),
-                new Tile(7, 10, Resource.BRICK),
-                new Tile(8, 9, Resource.GRAIN),
-                new Tile(9, 11, Resource.LUMBER),
-                new Tile(10, 3, Resource.LUMBER),
-                new Tile(11, 8, Resource.ORE),
-                new Tile(12, 8, Resource.LUMBER),
-                new Tile(13, 3, Resource.ORE),
-                new Tile(14, 4, Resource.GRAIN),
-                new Tile(15, 5, Resource.WOOL),
-                new Tile(16, 5, Resource.BRICK),
-                new Tile(17, 6, Resource.GRAIN),
-                new Tile(18, 11, Resource.WOOL)
-        };
-        List<Tile> filteredTiles = Arrays.stream(tiles).filter(tile -> tile.getToken() == dice).toList();
-        assertEquals(Arrays.asList(tiles[4], tiles[16]), filteredTiles);
+        Board board = new Board();
+        List<Tile> filteredTiles = Arrays.stream(board.getTiles()).filter(tile -> tile.getToken() == dice).toList();
+        assertEquals(Arrays.asList(board.getTile(5), board.getTile(18)), filteredTiles);
     }
 
     @Test
-    public void test1(){
-        List<Player> players = playerRepository.findAll();
-        assertEquals(1, players.get(0).getPlayerID());
-    }
+    void addingResources(){
+        Board board = new Board();
 
+        List<Tile> tilesOnBuilding1 = List.of(new Tile(1, 10, Resource.ORE), new Tile(2, 2, Resource.WOOL), new Tile(5, 6, Resource.BRICK));
+        List<Tile> tilesOnBuilding2 = List.of(new Tile(3, 9, Resource.LUMBER), new Tile(6, 4, Resource.WOOL), new Tile(7, 10, Resource.BRICK));
+
+        Building building1 = new Building(tilesOnBuilding1);
+        Building building2 = new Building(tilesOnBuilding2);
+
+        Player player1 = new Player(1);
+        Player player2 = new Player(2);
+
+        player1.addBuilding(building1);
+        player2.addBuilding(building2);
+
+        int dice = 10;
+
+        List<Tile> tiles = Arrays.stream(board.getTiles()).filter(tile -> tile.getToken() == dice).toList();
+        List<Player> playerThatReceivesResources;
+
+
+        for(Tile tile: tiles) {
+            playerThatReceivesResources =  Stream.of(player1, player2).filter(player -> player.hasBuilding(tile)).toList();
+            for(Player player: playerThatReceivesResources) {
+                player.addResource(tile.getResourceType());
+            }
+        }
+
+        assertAll(
+                () -> assertEquals(1, player1.getOre()),
+                () -> assertEquals(1, player2.getBrick()),
+                () -> assertEquals(0, player1.getGrain()),
+                () -> assertEquals(0, player2.getLumber())
+        );
+    }
 }

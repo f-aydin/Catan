@@ -9,8 +9,8 @@ class BoardTest {
     @Test
     void doesGetSpecificTileWork() {
         Board board = new Board();
-        Tile tileExpected = new Tile(1, 10, Resource.ORE);
-        Tile tileActual = board.getSpecificTile(1);
+        Tile tileExpected = board.getTiles()[15];
+        Tile tileActual = board.getTile(16);
         assertEquals(tileExpected, tileActual);
     }
 }

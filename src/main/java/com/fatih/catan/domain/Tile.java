@@ -7,7 +7,6 @@ import java.util.Objects;
 @Entity
 public class Tile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tileID;
     private int token;
     private Resource resourceType;

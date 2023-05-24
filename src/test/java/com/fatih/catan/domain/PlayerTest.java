@@ -18,7 +18,7 @@ class PlayerTest {
         List<Building> buildings = List.of(new Building(1, Arrays.asList(tile1, tile2, tile3)));
 
 
-        assertEquals(true, buildings.stream().anyMatch(building -> building.isOnTile(tile2)));
+        assertTrue(buildings.stream().anyMatch(building -> building.isOnTile(tile2)));
     }
 
     @Test

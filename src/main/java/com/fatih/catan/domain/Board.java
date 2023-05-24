@@ -31,7 +31,7 @@ public class Board {
         return tiles;
     }
 
-    public Tile getSpecificTile(int tileNumber){
+    public Tile getTile(int tileNumber){
         for(Tile tile : tiles) {
             if(tile.getTileID() == tileNumber){
                 return tile;

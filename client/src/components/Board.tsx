@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 export function Board() {
   const [roadVisible, setRoadVisible] = useState(false);
   const [playerResources, setPlayerResources] = useState([]);
-  const [dice, setDice] = useState(Number);
-  const [playerID, setPlayerID] = useState("");
-  const [tile1, setTile1] = useState("");
-  const [tile2, setTile2] = useState("");
-  const [tile3, setTile3] = useState("");
+  const [resourcesChange, setResourcesChange] = useState([]);
+  const [dice, setDice] = useState(0);
+  const [playerID, setPlayerID] = useState(Number);
+  const [tile1, setTile1] = useState(Number);
+  const [tile2, setTile2] = useState(Number);
+  const [tile3, setTile3] = useState(Number);
 
   async function addByDiceRoll() {
     const diceRoll =
@@ -76,14 +77,13 @@ export function Board() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        playerID: Number(playerID),
-        tile1: Number(tile1),
-        tile2: Number(tile2),
-        tile3: Number(tile3)
+        playerID: playerID,
+        tile1: tile1,
+        tile2: tile2,
+        tile3: tile3
       })
     });
     const data = await response.json();
-    console.log(data);
   }
 
   return (
@@ -97,10 +97,10 @@ export function Board() {
       </button>
       {dice}
       <div>
-        <input size={1} placeholder={"ID"} value={playerID} onChange={(e) => setPlayerID(e.target.value)}/>
-        <input size={1} placeholder={"Tile 1"} value={tile1} onChange={(e) => setTile1(e.target.value)} />
-        <input size={1} placeholder={"Tile 2"} value={tile2} onChange={(e) => setTile2(e.target.value)}/>
-        <input size={1} placeholder={"Tile 3"} value={tile3} onChange={(e) => setTile3(e.target.value)}/>
+        <input size={1} placeholder={"ID"} value={playerID} onChange={(e) => setPlayerID(Number(e.target.value))}/>
+        <input size={1} placeholder={"Tile 1"} value={tile1} onChange={(e) => setTile1(Number(e.target.value))} />
+        <input size={1} placeholder={"Tile 2"} value={tile2} onChange={(e) => setTile2(Number(e.target.value))}/>
+        <input size={1} placeholder={"Tile 3"} value={tile3} onChange={(e) => setTile3(Number(e.target.value))}/>
         <button
           id="buildButton"
           onClick={() => {
@@ -108,6 +108,7 @@ export function Board() {
           }}
         >
           Build!
+
         </button>
       </div>
       {writePlayerResources(playerResources)}

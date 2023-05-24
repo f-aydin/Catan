@@ -2,6 +2,7 @@ package com.fatih.catan.api;
 
 import com.fatih.catan.domain.PlayerService;
 import com.fatih.catan.domain.Player;
+import com.fatih.catan.dto.BuildDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class PlayerController {
     }
 
     @PostMapping("/buildSettlement")
-    public List<Player> buildSettlement(@RequestBody Integer playerID, @RequestBody Integer tile1, @RequestBody Integer tile2, @RequestBody Integer tile3){
-        return playerService.buildSettlement(playerID, tile1, tile2, tile3);
+    public List<Player> buildSettlement(@RequestBody BuildDTO buildDTO) throws Exception {
+        return playerService.buildSettlement(buildDTO);
     }
 }
