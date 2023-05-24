@@ -1,7 +1,8 @@
 package com.fatih.catan.api;
 
-import com.fatih.catan.domain.PlayerModel;
+import com.fatih.catan.domain.PlayerService;
 import com.fatih.catan.domain.Player;
+import com.fatih.catan.dto.BuildDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +13,11 @@ import java.util.List;
 @RequestMapping(path = "api")
 
 public class PlayerController {
-    private final PlayerModel playerModel;
+    private final PlayerService playerService;
 
     @Autowired
-    public PlayerController(PlayerModel playerModel) {
-        this.playerModel = playerModel;
+    public PlayerController(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     @GetMapping("/greet")
@@ -25,13 +26,17 @@ public class PlayerController {
     }
 
     @GetMapping("/playerResources")
-    public List<Player> getPlayer(){
-        return playerModel.getPlayer();
+    public List<Player> getPlayers(){
+        return playerService.getPlayers();
     }
-
 
     @PostMapping("/addOneByDice")
     public List<Player> addResources(@RequestBody Integer dice){
-        return playerModel.addResources(dice);
+        return playerService.addResources(dice);
+    }
+
+    @PostMapping("/buildSettlement")
+    public List<Player> buildSettlement(@RequestBody BuildDTO buildDTO) throws Exception {
+        return playerService.buildSettlement(buildDTO);
     }
 }

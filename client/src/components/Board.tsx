@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 export function Board() {
   const [roadVisible, setRoadVisible] = useState(false);
   const [playerResources, setPlayerResources] = useState([]);
-  const [dice, setDice] = useState(Number);
+  const [resourcesChange, setResourcesChange] = useState([]);
+  const [dice, setDice] = useState(0);
+  const [playerID, setPlayerID] = useState(Number);
+  const [tile1, setTile1] = useState(Number);
+  const [tile2, setTile2] = useState(Number);
+  const [tile3, setTile3] = useState(Number);
 
   async function addByDiceRoll() {
     const diceRoll =
@@ -67,6 +72,20 @@ export function Board() {
     }
   }
 
+  async function buildSettlement() {
+    const response = await fetch("http://localhost:8080/api/buildSettlement", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerID: playerID,
+        tile1: tile1,
+        tile2: tile2,
+        tile3: tile3
+      })
+    });
+    const data = await response.json();
+  }
+
   return (
     <div className="App-header">
       <button
@@ -76,9 +95,22 @@ export function Board() {
       >
         Roll Dice
       </button>
-
       {dice}
+      <div>
+        <input size={1} placeholder={"ID"} value={playerID} onChange={(e) => setPlayerID(Number(e.target.value))}/>
+        <input size={1} placeholder={"Tile 1"} value={tile1} onChange={(e) => setTile1(Number(e.target.value))} />
+        <input size={1} placeholder={"Tile 2"} value={tile2} onChange={(e) => setTile2(Number(e.target.value))}/>
+        <input size={1} placeholder={"Tile 3"} value={tile3} onChange={(e) => setTile3(Number(e.target.value))}/>
+        <button
+          id="buildButton"
+          onClick={() => {
+            buildSettlement();
+          }}
+        >
+          Build!
 
+        </button>
+      </div>
       {writePlayerResources(playerResources)}
 
       <HexGrid width={900} height={800} viewBox="-50 -50 100 100">
@@ -115,15 +147,7 @@ export function Board() {
           <Hexagon key={9} q={-1} r={0} s={1} data={11} fill="lumber">
             <Text>11</Text>
           </Hexagon>
-          <Hexagon
-            key={10}
-            onClick={handleClick}
-            q={0}
-            r={0}
-            s={0}
-            data={7}
-            fill="desert"
-          >
+          <Hexagon key={10} q={0} r={0} s={0} data={7} fill="desert">
             <Text>7</Text>
           </Hexagon>
           <Hexagon key={11} q={1} r={0} s={-1} data={3} fill="lumber">
@@ -180,7 +204,7 @@ export function Board() {
         </Layout>
       </HexGrid>
 
-      {/* <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
+      <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
       <button className="row1" style={{ ["--fromright" as any]: "510px" }} />
       <button className="row1" style={{ ["--fromright" as any]: "710px" }} />
 
@@ -195,7 +219,12 @@ export function Board() {
       <button className="row3" style={{ ["--fromright" as any]: "1110px" }} />
 
       <button className="row4" style={{ ["--fromright" as any]: "600px" }} />
-      <button className="row4" id="12" style={{ ["--fromright" as any]: "790px" }} onClick={changeOpacity}/>
+      <button
+        className="row4"
+        id="12"
+        style={{ ["--fromright" as any]: "790px" }}
+        onClick={changeOpacity}
+      />
       <button className="row4" style={{ ["--fromright" as any]: "990px" }} />
       <button className="row4" style={{ ["--fromright" as any]: "1190px" }} />
       <button className="row4" style={{ ["--fromright" as any]: "1390px" }} />
@@ -210,9 +239,9 @@ export function Board() {
       <button className="row6" style={{ ["--fromright" as any]: "1110px" }} />
       <button className="row6" style={{ ["--fromright" as any]: "1310px" }} />
       <button className="row6" style={{ ["--fromright" as any]: "1510px" }} />
-      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} /> */}
+      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} />
 
-      {roadVisible && <div className="rectangle" />}
+      {/* {roadVisible && <div className="rectangle" />} */}
     </div>
   );
 }
