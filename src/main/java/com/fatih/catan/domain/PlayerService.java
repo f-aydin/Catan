@@ -47,6 +47,10 @@ public class PlayerService {
             throw new Exception("Tile does not exist. (Choose between 1-20");
         }
 
+        if(isLocationOccupied(board, buildDto)){
+            throw new Exception("Location is occupied. Choose another one");
+        }
+
         Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
 
         List<Tile> tiles =List.of(board.getTile(buildDto.getTile1()), board.getTile(buildDto.getTile2()), board.getTile(buildDto.getTile3()));
@@ -56,7 +60,15 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
-
+    private boolean isLocationOccupied(Board board, BuildDTO buildDto){
+        for(Player player : playerRepository.findAll()){
+            if(player.hasBuilding(board.getTile(buildDto.getTile1())) && player.hasBuilding(board.getTile(buildDto.getTile2())) &&
+            player.hasBuilding(board.getTile(buildDto.getTile3()))){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private boolean doesTileNotExist(BuildDTO buildDto) {
         return buildDto.getTile1() <= -1 || buildDto.getTile1() >= 20 ||

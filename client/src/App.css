@@ -34,64 +34,9 @@ svg g text {
   transition: fill-opacity 0.5s;
 }
 
-.row1 {
-  position: relative;
-  bottom: 330px;
-  right: var(--fromright);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-}
-
-.row2 {
-  position: relative;
-  bottom: 290px;
-  right: var(--fromright);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-}
-.row3 {
-  position: relative;
-  bottom: 210px;
-  right: var(--fromright);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-}
-.row4 {
-  position: relative;
-  bottom: 170px;
-  right: var(--fromright);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-}
-.row5 {
-  position: relative;
-  bottom: 90px;
-  right: var(--fromright);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-}
-.row6 {
-  position: relative;
-  bottom: 50px;
-  right: var(--fromright);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-}
-.row7 {
-  position: relative;
-  bottom: -50px;
+.vertices{
+  position: absolute;
+  bottom: var(--frombottom);
   right: var(--fromright);
   border-radius: 50%;
   width: 40px;

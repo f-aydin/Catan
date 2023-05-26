@@ -1,5 +1,5 @@
 import { HexGrid, Hexagon, Layout, Pattern, Text } from "react-hexgrid";
-import { useEffect, useState } from "react";
+import { useEffect, useState, MouseEvent } from "react";
 
 export function Board() {
   const [roadVisible, setRoadVisible] = useState(false);
@@ -64,13 +64,28 @@ export function Board() {
     getRequest();
   }, []);
 
-  function changeOpacity() {
-    const button = document.getElementById("12");
+  function changeOpacity(e: MouseEvent<HTMLElement>) {
+    const button = document.getElementById(e.currentTarget.id);
     if (button != null) {
       button.style.setProperty("opacity", "1");
-      button.style.setProperty("background-color", "red");
+      switch(playerID){
+        case 1:
+          button.style.setProperty("background-color", "red");
+          break;
+        case 2:
+          button.style.setProperty("background-color", "blue");
+          break;
+        case 3:
+          button.style.setProperty("background-color", "green");
+          break;
+        case 4:
+          button.style.setProperty("background-color", "yellow");
+          break;
+      }
     }
+
   }
+  
 
   async function buildSettlement() {
     const response = await fetch("http://localhost:8080/api/buildSettlement", {
@@ -97,14 +112,18 @@ export function Board() {
       </button>
       {dice}
       <div>
+        Player ID:
         <input size={1} placeholder={"ID"} value={playerID} onChange={(e) => setPlayerID(Number(e.target.value))}/>
+        Tile 1:
         <input size={1} placeholder={"Tile 1"} value={tile1} onChange={(e) => setTile1(Number(e.target.value))} />
+        Tile 2:
         <input size={1} placeholder={"Tile 2"} value={tile2} onChange={(e) => setTile2(Number(e.target.value))}/>
+        Tile 3:
         <input size={1} placeholder={"Tile 3"} value={tile3} onChange={(e) => setTile3(Number(e.target.value))}/>
         <button
           id="buildButton"
           onClick={() => {
-            buildSettlement();
+            buildSettlement();;
           }}
         >
           Build!
@@ -113,7 +132,8 @@ export function Board() {
       </div>
       {writePlayerResources(playerResources)}
 
-      <HexGrid width={900} height={800} viewBox="-50 -50 100 100">
+<div style={{position: "relative", width: 900, height: 900}}>
+      <HexGrid width={900} height={800} viewBox="-50 -50 100 100" style={{position: "absolute", top:0,left:0}}>
         <Layout
           size={{ x: 12, y: 10.5 }}
           flat={false}
@@ -204,43 +224,78 @@ export function Board() {
         </Layout>
       </HexGrid>
 
-      <button className="row1" style={{ ["--fromright" as any]: "310px" }} />
-      <button className="row1" style={{ ["--fromright" as any]: "510px" }} />
-      <button className="row1" style={{ ["--fromright" as any]: "710px" }} />
+      <button id="1" className="vertices" style={{ ["--fromright" as any]: "590px" , ["--frombottom" as any]: "800px"}} onClick={changeOpacity}/>
+      <button id="2" className="vertices" style={{ ["--fromright" as any]: "430px", ["--frombottom" as any]: "800px" }} onClick={changeOpacity}/>
+      <button id="3" className="vertices" style={{ ["--fromright" as any]: "270px", ["--frombottom" as any]: "800px" }} onClick={changeOpacity}/>
 
-      <button className="row2" style={{ ["--fromright" as any]: "350px" }} />
-      <button className="row2" style={{ ["--fromright" as any]: "550px" }} />
-      <button className="row2" style={{ ["--fromright" as any]: "750px" }} />
-      <button className="row2" style={{ ["--fromright" as any]: "950px" }} />
+      <button id="4" className="vertices" style={{ ["--fromright" as any]: "670px", ["--frombottom" as any]: "760px" }}  onClick={changeOpacity}/>
+      <button id="5" className="vertices" style={{ ["--fromright" as any]: "510px", ["--frombottom" as any]: "760px" }}  onClick={changeOpacity}/>
+      <button id="6" className="vertices" style={{ ["--fromright" as any]: "350px", ["--frombottom" as any]: "760px" }}  onClick={changeOpacity}/>
+      <button id="7" className="vertices" style={{ ["--fromright" as any]: "190px", ["--frombottom" as any]: "760px" }}  onClick={changeOpacity}/>
 
-      <button className="row3" style={{ ["--fromright" as any]: "510px" }} />
-      <button className="row3" style={{ ["--fromright" as any]: "710px" }} />
-      <button className="row3" style={{ ["--fromright" as any]: "910px" }} />
-      <button className="row3" style={{ ["--fromright" as any]: "1110px" }} />
+      <button id="8" className="vertices" style={{ ["--fromright" as any]: "670px", ["--frombottom" as any]: "680px" }} onClick={changeOpacity}/>
+      <button id="9" className="vertices" style={{ ["--fromright" as any]: "510px", ["--frombottom" as any]: "680px" }} onClick={changeOpacity}/>
+      <button id="10" className="vertices" style={{ ["--fromright" as any]: "350px", ["--frombottom" as any]: "680px" }} onClick={changeOpacity}/>
+      <button id="11" className="vertices" style={{ ["--fromright" as any]: "190px", ["--frombottom" as any]: "680px" }} onClick={changeOpacity}/>
 
-      <button className="row4" style={{ ["--fromright" as any]: "600px" }} />
+      <button id="12" className="vertices" style={{ ["--fromright" as any]: "750px",  ["--frombottom" as any]: "640px" }} onClick={changeOpacity}/>
       <button
-        className="row4"
-        id="12"
-        style={{ ["--fromright" as any]: "790px" }}
+        className="vertices"
+        id="13"
+        style={{ ["--fromright" as any]: "590px",  ["--frombottom" as any]: "640px"  }}
         onClick={changeOpacity}
       />
-      <button className="row4" style={{ ["--fromright" as any]: "990px" }} />
-      <button className="row4" style={{ ["--fromright" as any]: "1190px" }} />
-      <button className="row4" style={{ ["--fromright" as any]: "1390px" }} />
+      <button id="14" className="vertices" style={{ ["--fromright" as any]: "430px",  ["--frombottom" as any]: "640px"  }} onClick={changeOpacity}/>
+      <button id="15" className="vertices" style={{ ["--fromright" as any]: "270px",  ["--frombottom" as any]: "640px"  }} onClick={changeOpacity}/>
+      <button id="16" className="vertices" style={{ ["--fromright" as any]: "110px",  ["--frombottom" as any]: "640px"  }} onClick={changeOpacity}/>
 
-      <button className="row5" style={{ ["--fromright" as any]: "800px" }} />
-      <button className="row5" style={{ ["--fromright" as any]: "990px" }} />
-      <button className="row5" style={{ ["--fromright" as any]: "1190px" }} />
-      <button className="row5" style={{ ["--fromright" as any]: "1390px" }} />
-      <button className="row5" style={{ ["--fromright" as any]: "1590px" }} />
+      <button id="17" className="vertices" style={{ ["--fromright" as any]: "750px",  ["--frombottom" as any]: "560px"  }} onClick={changeOpacity}/>
+      <button id="18" className="vertices" style={{ ["--fromright" as any]: "590px",  ["--frombottom" as any]: "560px" }} onClick={changeOpacity}/>
+      <button id="19" className="vertices" style={{ ["--fromright" as any]: "430px",  ["--frombottom" as any]: "560px" }} onClick={changeOpacity}/>
+      <button id="20" className="vertices" style={{ ["--fromright" as any]: "270px",  ["--frombottom" as any]: "560px" }} onClick={changeOpacity}/>
+      <button id="21" className="vertices" style={{ ["--fromright" as any]: "110px",  ["--frombottom" as any]: "560px" }} onClick={changeOpacity}/>
 
-      <button className="row6" style={{ ["--fromright" as any]: "910px" }} />
-      <button className="row6" style={{ ["--fromright" as any]: "1110px" }} />
-      <button className="row6" style={{ ["--fromright" as any]: "1310px" }} />
-      <button className="row6" style={{ ["--fromright" as any]: "1510px" }} />
-      <button className="row6" style={{ ["--fromright" as any]: "1710px" }} />
+      <button id="22" className="vertices" style={{ ["--fromright" as any]: "830px",  ["--frombottom" as any]: "520px" }} onClick={changeOpacity}/>
+      <button id="23" className="vertices" style={{ ["--fromright" as any]: "670px",  ["--frombottom" as any]: "520px" }} onClick={changeOpacity}/>
+      <button id="24" className="vertices" style={{ ["--fromright" as any]: "510px",  ["--frombottom" as any]: "520px" }} onClick={changeOpacity}/>
+      <button id="25" className="vertices" style={{ ["--fromright" as any]: "350px",  ["--frombottom" as any]: "520px" }} onClick={changeOpacity}/>
+      <button id="26" className="vertices" style={{ ["--fromright" as any]: "190px",  ["--frombottom" as any]: "520px" }} onClick={changeOpacity}/>
+      <button id="27" className="vertices" style={{ ["--fromright" as any]: "30px",  ["--frombottom" as any]: "520px" }} onClick={changeOpacity}/>
 
+      <button id="28" className="vertices" style={{ ["--fromright" as any]: "830px",  ["--frombottom" as any]: "440px" }} onClick={changeOpacity}/>
+      <button id="29" className="vertices" style={{ ["--fromright" as any]: "670px",  ["--frombottom" as any]: "440px" }} onClick={changeOpacity}/>
+      <button id="30" className="vertices" style={{ ["--fromright" as any]: "510px",  ["--frombottom" as any]: "440px" }} onClick={changeOpacity}/>
+      <button id="31" className="vertices" style={{ ["--fromright" as any]: "350px",  ["--frombottom" as any]: "440px" }} onClick={changeOpacity}/>
+      <button id="32" className="vertices" style={{ ["--fromright" as any]: "190px",  ["--frombottom" as any]: "440px" }} onClick={changeOpacity}/>
+      <button id="33" className="vertices" style={{ ["--fromright" as any]: "30px",  ["--frombottom" as any]: "440px" }} onClick={changeOpacity}/>
+
+      <button id="34" className="vertices" style={{ ["--fromright" as any]: "750px",  ["--frombottom" as any]: "400px"  }} onClick={changeOpacity}/>
+      <button id="35" className="vertices" style={{ ["--fromright" as any]: "590px",  ["--frombottom" as any]: "400px" }} onClick={changeOpacity}/>
+      <button id="36" className="vertices" style={{ ["--fromright" as any]: "430px",  ["--frombottom" as any]: "400px" }} onClick={changeOpacity}/>
+      <button id="37" className="vertices" style={{ ["--fromright" as any]: "270px",  ["--frombottom" as any]: "400px" }} onClick={changeOpacity}/>
+      <button id="38" className="vertices" style={{ ["--fromright" as any]: "110px",  ["--frombottom" as any]: "400px" }} onClick={changeOpacity}/>
+
+      <button id="39" className="vertices" style={{ ["--fromright" as any]: "750px",  ["--frombottom" as any]: "320px"  }} onClick={changeOpacity}/>
+      <button id="40" className="vertices" style={{ ["--fromright" as any]: "590px",  ["--frombottom" as any]: "320px" }} onClick={changeOpacity}/>
+      <button id="41" className="vertices" style={{ ["--fromright" as any]: "430px",  ["--frombottom" as any]: "320px" }} onClick={changeOpacity}/>
+      <button id="42" className="vertices" style={{ ["--fromright" as any]: "270px",  ["--frombottom" as any]: "320px" }} onClick={changeOpacity}/>
+      <button id="43" className="vertices" style={{ ["--fromright" as any]: "110px",  ["--frombottom" as any]: "320px" }} onClick={changeOpacity}/>
+
+      <button id="44" className="vertices" style={{ ["--fromright" as any]: "670px", ["--frombottom" as any]: "280px" }} onClick={changeOpacity}/>
+      <button id="45" className="vertices" style={{ ["--fromright" as any]: "510px", ["--frombottom" as any]: "280px" }} onClick={changeOpacity}/>
+      <button id="46" className="vertices" style={{ ["--fromright" as any]: "350px", ["--frombottom" as any]: "280px" }} onClick={changeOpacity}/>
+      <button id="47" className="vertices" style={{ ["--fromright" as any]: "190px", ["--frombottom" as any]: "280px" }} onClick={changeOpacity}/>
+
+      <button id="48" className="vertices" style={{ ["--fromright" as any]: "670px", ["--frombottom" as any]: "200px" }} onClick={changeOpacity}/>
+      <button id="49" className="vertices" style={{ ["--fromright" as any]: "510px", ["--frombottom" as any]: "200px" }} onClick={changeOpacity}/>
+      <button id="50" className="vertices" style={{ ["--fromright" as any]: "350px", ["--frombottom" as any]: "200px" }} onClick={changeOpacity}/>
+      <button id="51" className="vertices" style={{ ["--fromright" as any]: "190px", ["--frombottom" as any]: "200px" }} onClick={changeOpacity}/>
+
+      <button id="52" className="vertices" style={{ ["--fromright" as any]: "590px" , ["--frombottom" as any]: "160px"}} onClick={changeOpacity}/>
+      <button id="53" className="vertices" style={{ ["--fromright" as any]: "430px", ["--frombottom" as any]: "160px" }} onClick={changeOpacity}/>
+      <button id="54" className="vertices" style={{ ["--fromright" as any]: "270px", ["--frombottom" as any]: "160px" }} onClick={changeOpacity}/>
+
+      </div>
       {/* {roadVisible && <div className="rectangle" />} */}
     </div>
   );
