@@ -43,3 +43,11 @@ svg g text {
   height: 40px;
   opacity: 0;
 }
+
+#hover:hover + #catantiles{
+  display: block;
+}
+
+#catantiles{
+  display: none;
+}

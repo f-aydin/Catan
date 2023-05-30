@@ -17,7 +17,7 @@ public class PlayerService {
         this.playerRepository = playerRepository;
     }
 
-    public List<Player> getPlayers(){
+    public List<Player> getPlayers() {
         return playerRepository.findAll();
     }
 
@@ -26,9 +26,9 @@ public class PlayerService {
         List<Player> players = playerRepository.findAll();
         List<Tile> tiles = Arrays.stream(board.getTiles()).filter(tile -> tile.getToken() == dice).toList();
         List<Player> playerThatReceivesResources;
-        for(Tile tile: tiles) {
-            playerThatReceivesResources =  players.stream().filter(player -> player.hasBuilding(tile)).toList();
-            for(Player player: playerThatReceivesResources) {
+        for(Tile tile : tiles) {
+            playerThatReceivesResources = players.stream().filter(player -> player.hasBuilding(tile)).toList();
+            for(Player player : playerThatReceivesResources) {
                 player.addResource(tile.getResourceType());
                 playerRepository.save(player);
             }
@@ -39,35 +39,51 @@ public class PlayerService {
 
     public List<Player> buildSettlement(BuildDTO buildDto) throws Exception {
         Board board = new Board();
-        if(doesPlayerNotExist(buildDto)){
+        if(doesPlayerNotExist(buildDto)) {
             throw new Exception("Player does not exist");
         }
 
-        if(doesTileNotExist(buildDto)){
+        if(doesTileNotExist(buildDto)) {
             throw new Exception("Tile does not exist. (Choose between 1-20");
         }
 
-        if(isLocationOccupied(board, buildDto)){
+        if(isLocationOccupied(board, buildDto)) {
             throw new Exception("Location is occupied. Choose another one");
         }
 
-        Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
+        if(doesPlayerNotHaveEnoughResources(buildDto)){
+            throw new Exception("Not enough resources");
+        }
 
-        List<Tile> tiles =List.of(board.getTile(buildDto.getTile1()), board.getTile(buildDto.getTile2()), board.getTile(buildDto.getTile3()));
+        Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
+        List<Tile> tiles = List.of(board.getTile(buildDto.getTile1()), board.getTile(buildDto.getTile2()), board.getTile(buildDto.getTile3()));
         Building building = new Building(tiles);
         player.addBuilding(building);
+        subtractResources(player);
         playerRepository.save(player);
         return playerRepository.findAll();
     }
 
-    private boolean isLocationOccupied(Board board, BuildDTO buildDto){
-        for(Player player : playerRepository.findAll()){
-            if(player.hasBuilding(board.getTile(buildDto.getTile1())) && player.hasBuilding(board.getTile(buildDto.getTile2())) &&
-            player.hasBuilding(board.getTile(buildDto.getTile3()))){
-                return true;
-            }
-        }
-        return false;
+    private List<Player> subtractResources(Player player) {
+        player.setBrick(player.getBrick()-1);
+        player.setWool(player.getWool()-1);
+        player.setGrain(player.getGrain()-1);
+        player.setLumber(player.getLumber()-1);
+        playerRepository.save(player);
+        return playerRepository.findAll();
+    }
+
+    private boolean doesPlayerNotHaveEnoughResources(BuildDTO buildDTO) {
+        Player player = playerRepository.findById(buildDTO.getPlayerID()).orElseThrow();
+        return player.getGrain() < 1 || player.getLumber() < 1 || player.getWool() < 1 || player.getBrick() < 1;
+    }
+
+    private boolean isLocationOccupied(Board board, BuildDTO buildDto) {
+        return playerRepository.findAll().stream().anyMatch(player ->
+                player.hasBuilding(board.getTile(buildDto.getTile1())) &&
+                        player.hasBuilding(board.getTile(buildDto.getTile2())) &&
+                            player.hasBuilding(board.getTile(buildDto.getTile3())));
+
     }
 
     private boolean doesTileNotExist(BuildDTO buildDto) {
