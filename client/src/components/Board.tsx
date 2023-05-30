@@ -1,5 +1,6 @@
 import { HexGrid, Hexagon, Layout, Pattern, Text } from "react-hexgrid";
 import { useEffect, useState, MouseEvent } from "react";
+import board from '../icons/catan_tile.png'
 
 export function Board() {
   const [roadVisible, setRoadVisible] = useState(false);
@@ -14,13 +15,16 @@ export function Board() {
   async function addByDiceRoll() {
     const diceRoll =
       Math.floor(Math.random() * 6) + 1 + (Math.floor(Math.random() * 6) + 1);
-    await fetch("http://localhost:8080/api/addOneByDice", {
+    const response = await fetch("http://localhost:8080/api/addOneByDice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(diceRoll),
     });
+    const data = await response.json();
+    setResourcesChange(data);
     setDice(diceRoll);
     getRequest();
+    trackChanges(data)
   }
 
   function handleClick() {
@@ -85,7 +89,6 @@ export function Board() {
     }
 
   }
-  
 
   async function buildSettlement() {
     const response = await fetch("http://localhost:8080/api/buildSettlement", {
@@ -100,6 +103,14 @@ export function Board() {
     });
     const data = await response.json();
   }
+
+    function trackChanges(data : []) {
+    const diff = data.filter((obj1 : any) => {
+        return !playerResources.some((obj2) => {
+            return JSON.stringify(obj1, ["brick", "grain", "wool", "lumber", "ore"]) == JSON.stringify(obj2, ["brick", "grain", "wool", "lumber", "ore"])
+        })
+    })
+    }
 
   return (
     <div className="App-header">
@@ -123,7 +134,7 @@ export function Board() {
         <button
           id="buildButton"
           onClick={() => {
-            buildSettlement();;
+            buildSettlement();
           }}
         >
           Build!
@@ -131,6 +142,8 @@ export function Board() {
         </button>
       </div>
       {writePlayerResources(playerResources)}
+      <div id="hover">View Board: </div>
+      <img id="catantiles" src={board}></img>
 
 <div style={{position: "relative", width: 900, height: 900}}>
       <HexGrid width={900} height={800} viewBox="-50 -50 100 100" style={{position: "absolute", top:0,left:0}}>

@@ -25,6 +25,15 @@ public class Player {
         this.playerID = playerID;
     }
 
+    public Player(int playerID, int lumber, int wool, int brick, int ore, int grain) {
+        this.playerID = playerID;
+        this.lumber = lumber;
+        this.wool = wool;
+        this.brick = brick;
+        this.ore = ore;
+        this.grain = grain;
+    }
+
     public Player(int playerID, List<Building> buildings) {
         this.playerID = playerID;
         this.buildings = buildings;
