@@ -10,7 +10,7 @@ public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int buildingID;
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     private List<Tile> tiles = new ArrayList<>();
 
     public Building() {
@@ -35,20 +35,5 @@ public class Building {
 
     public boolean isOnTile(Tile tile) {
         return tiles.contains(tile);
-    }
-
-    public void buildOnTile(Tile tile1){
-        tiles.add(tile1);
-    }
-
-    public void buildOnTile(Tile tile1, Tile tile2){
-        tiles.add(tile1);
-        tiles.add(tile2);
-    }
-
-    public void buildOnTile(Tile tile1, Tile tile2, Tile tile3){
-        tiles.add(tile1);
-        tiles.add(tile2);
-        tiles.add(tile3);
     }
 }

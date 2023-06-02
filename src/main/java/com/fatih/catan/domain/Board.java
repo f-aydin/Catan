@@ -1,5 +1,7 @@
 package com.fatih.catan.domain;
 
+import java.util.Arrays;
+
 public class Board {
     private final Tile[] tiles;
 
@@ -32,11 +34,9 @@ public class Board {
     }
 
     public Tile getTile(int tileNumber){
-        for(Tile tile : tiles) {
-            if(tile.getTileID() == tileNumber){
-                return tile;
-            }
-        }
-        return null;
+        return Arrays.stream(tiles)
+                .filter(tile -> tile.getTileID() == tileNumber)
+                .findAny()
+                .orElseThrow();
     }
 }
