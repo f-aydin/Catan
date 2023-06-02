@@ -16,15 +16,19 @@ class PlayerTest {
         Tile tile3 = new Tile(5, 6, Resource.BRICK);
 
         List<Building> buildings = List.of(new Building(1, Arrays.asList(tile1, tile2, tile3)));
-
-
         assertTrue(buildings.stream().anyMatch(building -> building.isOnTile(tile2)));
     }
 
     @Test
     void addResourceAddsOneResourceToResourceType() {
         Player player = new Player();
-        player.addResource(Resource.BRICK);
-        assertEquals(1, player.getBrick());
+        int addOne = 1;
+        int addTwo = 2;
+        player.addResource(Resource.BRICK, addOne);
+        player.addResource(Resource.ORE, addTwo);
+        assertAll(
+                () -> assertEquals(1, player.getBrick()),
+                () -> assertEquals(2, player.getOre())
+        );
     }
 }

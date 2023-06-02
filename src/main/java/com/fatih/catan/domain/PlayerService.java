@@ -24,16 +24,18 @@ public class PlayerService {
     public List<Player> addResources(Integer dice) {
         Board board = new Board();
         List<Player> players = playerRepository.findAll();
-        List<Tile> tiles = Arrays.stream(board.getTiles()).filter(tile -> tile.getToken() == dice).toList();
-        List<Player> playerThatReceivesResources;
+        List<Tile> tiles = Arrays.stream(board.getTiles())
+                .filter(tile -> tile.getToken() == dice)
+                .toList();
         for(Tile tile : tiles) {
-            playerThatReceivesResources = players.stream().filter(player -> player.hasBuilding(tile)).toList();
+            List<Player> playerThatReceivesResources = players.stream()
+                    .filter(player -> player.howManyBuildingsOnTile(tile) > 0)
+                    .toList();
             for(Player player : playerThatReceivesResources) {
-                player.addResource(tile.getResourceType());
+                player.addResource(tile.getResourceType(), player.howManyBuildingsOnTile(tile));
                 playerRepository.save(player);
             }
         }
-
         return playerRepository.findAll();
     }
 
@@ -44,7 +46,7 @@ public class PlayerService {
         }
 
         if(doesTileNotExist(buildDto)) {
-            throw new Exception("Tile does not exist. (Choose between 1-20");
+            throw new Exception("Tile does not exist. (Choose between 1-19)");
         }
 
         if(isLocationOccupied(board, buildDto)) {
@@ -64,13 +66,12 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
-    private List<Player> subtractResources(Player player) {
+    private void subtractResources(Player player) {
         player.setBrick(player.getBrick()-1);
         player.setWool(player.getWool()-1);
         player.setGrain(player.getGrain()-1);
         player.setLumber(player.getLumber()-1);
         playerRepository.save(player);
-        return playerRepository.findAll();
     }
 
     private boolean doesPlayerNotHaveEnoughResources(BuildDTO buildDTO) {
@@ -79,7 +80,8 @@ public class PlayerService {
     }
 
     private boolean isLocationOccupied(Board board, BuildDTO buildDto) {
-        return playerRepository.findAll().stream().anyMatch(player ->
+        return playerRepository.findAll().stream()
+                .anyMatch(player ->
                 player.hasBuilding(board.getTile(buildDto.getTile1())) &&
                         player.hasBuilding(board.getTile(buildDto.getTile2())) &&
                             player.hasBuilding(board.getTile(buildDto.getTile3())));

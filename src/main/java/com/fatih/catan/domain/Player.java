@@ -16,6 +16,7 @@ public class Player {
     private int ore;
     private int grain;
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "")
     private List<Building> buildings = new ArrayList<>();
 
     public Player() {
@@ -83,31 +84,37 @@ public class Player {
         this.grain = grain;
     }
 
-    public void addResource(Resource resource) {
+    public void addResource(Resource resource, int howManyResourceToGet) {
         switch(resource) {
             case LUMBER -> {
-                lumber++;
+                lumber += howManyResourceToGet;
             }
 
             case ORE -> {
-                ore++;
+                ore += howManyResourceToGet;
             }
             case GRAIN -> {
-                grain++;
+                grain += howManyResourceToGet;
             }
             case BRICK -> {
-                brick++;
+                brick += howManyResourceToGet;
             }
             case WOOL -> {
-                wool++;
+                wool += howManyResourceToGet;
             }
         }
     }
 
     public boolean hasBuilding(Tile tile) {
-        return buildings.stream().anyMatch(building -> building.isOnTile(tile));
+        return buildings.stream()
+                .anyMatch(building -> building.isOnTile(tile));
     }
 
+    public int howManyBuildingsOnTile(Tile tile){
+        return buildings.stream()
+                .filter(building -> building.isOnTile(tile))
+                .toList().size();
+    }
 
     public void addBuilding(Building building){
         buildings.add(building);

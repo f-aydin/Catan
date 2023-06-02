@@ -1,7 +1,9 @@
 package com.fatih.catan;
 
+import com.fatih.catan.domain.Board;
 import com.fatih.catan.domain.Player;
 import com.fatih.catan.repository.PlayerRepository;
+import com.fatih.catan.repository.TileRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -31,13 +33,16 @@ public class CatanApplication {
 
 	@Bean
 	@Transactional
-	public CommandLineRunner demo(PlayerRepository playerRepository){
+	public CommandLineRunner demo(PlayerRepository playerRepository, TileRepository tileRepository){
 		return (args) -> {
 			Player player1 = new Player(1, 4, 4, 4, 4, 4);
 			Player player2 = new Player(2, 4, 4, 4, 4, 4);
 			Player player3 = new Player(3, 4, 4, 4, 4, 4);
 			Player player4 = new Player(4, 4, 4, 4, 4, 4);
 			playerRepository.saveAll(List.of(player1, player2, player3, player4));
+
+			Board board = new Board();
+			tileRepository.saveAll(List.of(board.getTiles()));
 		};
 	}
 

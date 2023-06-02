@@ -11,6 +11,9 @@ class BoardTest {
         Board board = new Board();
         Tile tileExpected = board.getTiles()[15];
         Tile tileActual = board.getTile(16);
-        assertEquals(tileExpected, tileActual);
+
+        assertAll(
+                () -> assertEquals(tileExpected, tileActual)
+        );
     }
 }
