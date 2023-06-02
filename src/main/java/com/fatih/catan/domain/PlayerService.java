@@ -81,11 +81,11 @@ public class PlayerService {
 
     private boolean isLocationOccupied(Board board, BuildDTO buildDto) {
         return playerRepository.findAll().stream()
-                .anyMatch(player ->
-                player.hasBuilding(board.getTile(buildDto.getTile1())) &&
-                        player.hasBuilding(board.getTile(buildDto.getTile2())) &&
-                            player.hasBuilding(board.getTile(buildDto.getTile3())));
-
+                .anyMatch(player -> player.getBuildings()
+                        .stream().anyMatch(building ->
+                                building.isOnTile(board.getTile(buildDto.getTile1())) &&
+                                        building.isOnTile(board.getTile(buildDto.getTile2())) &&
+                                        building.isOnTile(board.getTile(buildDto.getTile3()))));
     }
 
     private boolean doesTileNotExist(BuildDTO buildDto) {

@@ -84,6 +84,10 @@ public class Player {
         this.grain = grain;
     }
 
+    public List<Building> getBuildings() {
+        return buildings;
+    }
+
     public void addResource(Resource resource, int howManyResourceToGet) {
         switch(resource) {
             case LUMBER -> {
