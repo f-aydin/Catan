@@ -16,7 +16,7 @@ public class Board {
                 new Tile(7, 10, Resource.BRICK),
                 new Tile(8, 9, Resource.GRAIN),
                 new Tile(9, 11, Resource.LUMBER),
-                new Tile(10, 7, null),
+                new Tile(10, 7, Resource.NULL),
                 new Tile(11, 3, Resource.LUMBER),
                 new Tile(12, 8, Resource.ORE),
                 new Tile(13, 8, Resource.LUMBER),

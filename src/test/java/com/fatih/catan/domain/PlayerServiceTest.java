@@ -100,4 +100,38 @@ class PlayerServiceTest {
                 () -> assertEquals(3, player2.getWool())
         );
     }
+
+    @Test
+    void robberPreventsDistributionOfResources(){
+        Board board = new Board();
+
+        List<Tile> tilesBuilding1 = List.of(new Tile(1, 10, Resource.ORE), new Tile(2, 2, Resource.WOOL), new Tile(5, 6, Resource.BRICK));
+        Building building1 = new Building(tilesBuilding1);
+
+        List<Tile> tilesBuilding2 = List.of(new Tile(2, 2, Resource.WOOL),  new Tile(3, 9, Resource.LUMBER), new Tile(6, 4, Resource.WOOL));
+        Building building2 = new Building(BuildingType.CITY, tilesBuilding2);
+
+        Player player1 = new Player(1, List.of(building1));
+        Player player2 = new Player(2, List.of(building1, building2));
+
+        int tileNumberToPlaceRobberOn = 2;
+        Tile robbedTile = board.getTile(tileNumberToPlaceRobberOn);
+        robbedTile.setHasRobber(true);
+
+        int dice = 2;
+        List<Tile> tiles = Arrays.stream(board.getTiles()).filter(tile -> tile.getToken() == dice).toList();
+        for(Tile tile: tiles) {
+            List<Player> playerThatReceivesResources =  Stream.of(player1, player2).filter(player -> player.hasBuilding(tile)).toList();
+            for(Player player: playerThatReceivesResources) {
+                player.addResource(tile.getResourceType(), player.howManyBuildingsOnTile(tile));
+            }
+        }
+
+        assertAll(
+                () -> assertEquals(1, player1.getWool()),
+                () -> assertEquals(1, player2.getWool())
+        );
+
+
+    }
 }

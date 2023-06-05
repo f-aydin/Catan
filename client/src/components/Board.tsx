@@ -12,6 +12,7 @@ export function Board() {
   const [tile2, setTile2] = useState(Number);
   const [tile3, setTile3] = useState(Number);
   const [buildingType, setBuildingType] = useState("SETTLEMENT");
+  const [placeRobber, setPlaceRobber] = useState(Number);
 
   async function addByDiceRoll() {
     const diceRoll =
@@ -19,17 +20,30 @@ export function Board() {
     const response = await fetch("http://localhost:8080/api/addOneByDice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(diceRoll),
+      body: JSON.stringify(diceRoll)
     });
     const data = await response.json();
     setResourcesChange(data);
     setDice(diceRoll);
     getRequest();
     trackChanges(data)
+
+    if(diceRoll === 7){
+      moveRobber(); 
+    }
   }
 
-  function handleClick() {
-    setRoadVisible(true);
+  async function moveRobber() {
+    const robberPlace = Number(prompt("Choose a tile number: "))
+    setPlaceRobber(robberPlace);
+    const response = await fetch("http://localhost:8080/api/placeRobberOnTile ", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(placeRobber)
+    });
+    const data = await response.json();
+    console.log(data);
+    console.log(placeRobber);
   }
 
   async function getRequest() {

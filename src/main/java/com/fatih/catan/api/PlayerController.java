@@ -39,4 +39,9 @@ public class PlayerController {
     public List<Player> buildSettlement(@RequestBody BuildDTO buildDTO) throws Exception {
         return playerService.buildSettlement(buildDTO);
     }
+
+    @PostMapping("/placeRobberOnTile")
+    public void placeRobber(@RequestBody Integer tileNumber){
+        playerService.placeRobber(tileNumber);
+    }
 }

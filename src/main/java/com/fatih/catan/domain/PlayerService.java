@@ -38,7 +38,12 @@ public class PlayerService {
                 }
             }
         }
+
         return playerRepository.findAll();
+    }
+
+    public void placeRobber(Integer tileNumber) {
+        System.out.print(tileNumber);
     }
 
     public List<Player> buildSettlement(BuildDTO buildDto) throws Exception {

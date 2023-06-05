@@ -106,6 +106,9 @@ public class Player {
             case WOOL -> {
                 wool += howManyResourceToGet;
             }
+            case NULL -> {
+
+            }
         }
     }
 

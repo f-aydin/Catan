@@ -5,5 +5,6 @@ public enum Resource {
     ORE,
     GRAIN,
     BRICK,
-    WOOL
+    WOOL,
+    NULL
 }
