@@ -11,6 +11,7 @@ export function Board() {
   const [tile1, setTile1] = useState(Number);
   const [tile2, setTile2] = useState(Number);
   const [tile3, setTile3] = useState(Number);
+  const [buildingType, setBuildingType] = useState("SETTLEMENT");
 
   async function addByDiceRoll() {
     const diceRoll =
@@ -71,6 +72,9 @@ export function Board() {
   function changeOpacity(e: MouseEvent<HTMLElement>) {
     const button = document.getElementById(e.currentTarget.id);
     if (button != null) {
+      if(buildingType == "CITY"){
+        button.style.setProperty("border-radius", "0%")
+      }
       button.style.setProperty("opacity", "1");
       switch(playerID){
         case 1:
@@ -98,7 +102,8 @@ export function Board() {
         playerID: playerID,
         tile1: tile1,
         tile2: tile2,
-        tile3: tile3
+        tile3: tile3,
+        type: buildingType
       })
     });
     const data = await response.json();
@@ -131,6 +136,11 @@ export function Board() {
         <input size={1} placeholder={"Tile 2"} value={tile2} onChange={(e) => setTile2(Number(e.target.value))}/>
         Tile 3:
         <input size={1} placeholder={"Tile 3"} value={tile3} onChange={(e) => setTile3(Number(e.target.value))}/>
+        <label htmlFor="type">Type: </label>
+          <select size={1} id="type" name="type" onChange={(e) => setBuildingType(String(e.target.value))}>
+            <option value="SETTLEMENT" selected>Settlement</option>
+            <option value="CITY">City</option>
+          </select>
         <button
           id="buildButton"
           onClick={() => {
@@ -138,7 +148,6 @@ export function Board() {
           }}
         >
           Build!
-
         </button>
       </div>
       {writePlayerResources(playerResources)}

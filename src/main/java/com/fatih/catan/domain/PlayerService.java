@@ -32,8 +32,10 @@ public class PlayerService {
                     .filter(player -> player.howManyBuildingsOnTile(tile) > 0)
                     .toList();
             for(Player player : playerThatReceivesResources) {
-                player.addResource(tile.getResourceType(), player.howManyBuildingsOnTile(tile));
-                playerRepository.save(player);
+                for(Building building : player.getBuildings()) {
+                    player.addResource(tile.getResourceType(), building.getType().getAmountOfResourcesToAdd());
+                    playerRepository.save(player);
+                }
             }
         }
         return playerRepository.findAll();
@@ -59,18 +61,33 @@ public class PlayerService {
 
         Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
         List<Tile> tiles = List.of(board.getTile(buildDto.getTile1()), board.getTile(buildDto.getTile2()), board.getTile(buildDto.getTile3()));
-        Building building = new Building(tiles);
+        Building building = createSettlementOrCity(buildDto, tiles);
         player.addBuilding(building);
-        subtractResources(player);
+        subtractResources(buildDto, player);
         playerRepository.save(player);
         return playerRepository.findAll();
     }
 
-    private void subtractResources(Player player) {
-        player.setBrick(player.getBrick()-1);
-        player.setWool(player.getWool()-1);
-        player.setGrain(player.getGrain()-1);
-        player.setLumber(player.getLumber()-1);
+    private Building createSettlementOrCity(BuildDTO buildDto, List<Tile> tiles) {
+        Building building;
+        if(buildDto.getType().equals(BuildingType.SETTLEMENT)){
+            building = new Building(BuildingType.SETTLEMENT, tiles);
+        } else {
+            building = new Building(BuildingType.CITY, tiles);
+        }
+        return building;
+    }
+
+    private void subtractResources(BuildDTO buildDTO, Player player) {
+        if(buildDTO.getType().equals(BuildingType.SETTLEMENT)){
+            player.setBrick(player.getBrick()-1);
+            player.setWool(player.getWool()-1);
+            player.setGrain(player.getGrain()-1);
+            player.setLumber(player.getLumber()-1);
+        } else {
+            player.setOre(player.getBrick()-3);
+            player.setGrain(player.getGrain()-2);
+        }
         playerRepository.save(player);
     }
 
