@@ -3,6 +3,7 @@ package com.fatih.catan.domain;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.stream.Collector;
 
 @Entity
 public class Tile {
@@ -39,7 +40,6 @@ public class Tile {
 
     public void setHasRobber(boolean hasRobber) {
         this.hasRobber = hasRobber;
-        this.resourceType = Resource.NULL;
     }
 
     @Override

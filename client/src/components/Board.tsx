@@ -12,11 +12,10 @@ export function Board() {
   const [tile2, setTile2] = useState(Number);
   const [tile3, setTile3] = useState(Number);
   const [buildingType, setBuildingType] = useState("SETTLEMENT");
-  const [placeRobber, setPlaceRobber] = useState(Number);
 
   async function addByDiceRoll() {
-    const diceRoll =
-      Math.floor(Math.random() * 6) + 1 + (Math.floor(Math.random() * 6) + 1);
+    const diceRoll = 10
+      // Math.floor(Math.random() * 6) + 1 + (Math.floor(Math.random() * 6) + 1);
     const response = await fetch("http://localhost:8080/api/addOneByDice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,24 +25,20 @@ export function Board() {
     setResourcesChange(data);
     setDice(diceRoll);
     getRequest();
-    trackChanges(data)
+    // trackChanges(data)
 
-    if(diceRoll === 7){
-      moveRobber(); 
-    }
+    // if(diceRoll === 7){
+    //   moveRobber(); 
+    // } 
   }
 
   async function moveRobber() {
     const robberPlace = Number(prompt("Choose a tile number: "))
-    setPlaceRobber(robberPlace);
     const response = await fetch("http://localhost:8080/api/placeRobberOnTile ", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(placeRobber)
+      body: JSON.stringify(robberPlace - 1)
     });
-    const data = await response.json();
-    console.log(data);
-    console.log(placeRobber);
   }
 
   async function getRequest() {
@@ -114,22 +109,22 @@ export function Board() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         playerID: playerID,
-        tile1: tile1,
-        tile2: tile2,
-        tile3: tile3,
+        tile1: tile1 - 1,
+        tile2: tile2 - 1,
+        tile3: tile3 - 1,
         type: buildingType
       })
     });
     const data = await response.json();
   }
 
-    function trackChanges(data : []) {
-    const diff = data.filter((obj1 : any) => {
-        return !playerResources.some((obj2) => {
-            return JSON.stringify(obj1, ["brick", "grain", "wool", "lumber", "ore"]) == JSON.stringify(obj2, ["brick", "grain", "wool", "lumber", "ore"])
-        })
-    })
-    }
+    // function trackChanges(data : []) {
+    // const diff = data.filter((obj1 : any) => {
+    //     return !playerResources.some((obj2) => {
+    //         return JSON.stringify(obj1, ["brick", "grain", "wool", "lumber", "ore"]) == JSON.stringify(obj2, ["brick", "grain", "wool", "lumber", "ore"])
+    //     })
+    // })
+    // }
 
   return (
     <div className="App-header">

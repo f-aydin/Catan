@@ -42,4 +42,10 @@ public class Building {
     public boolean isOnTile(Tile tile) {
         return tiles.contains(tile);
     }
+
+    public void replaceSettlementByCity(){
+        if(this.getType().equals(BuildingType.SETTLEMENT)){
+            this.type = BuildingType.CITY;
+        }
+    }
 }

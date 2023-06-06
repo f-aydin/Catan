@@ -2,19 +2,21 @@ package com.fatih.catan.domain;
 
 import com.fatih.catan.dto.BuildDTO;
 import com.fatih.catan.repository.PlayerRepository;
+import com.fatih.catan.repository.TileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PlayerService {
     private final PlayerRepository playerRepository;
+    private final TileRepository tileRepository;
 
     @Autowired
-    public PlayerService(PlayerRepository playerRepository) {
+    public PlayerService(PlayerRepository playerRepository, TileRepository tileRepository) {
         this.playerRepository = playerRepository;
+        this.tileRepository = tileRepository;
     }
 
     public List<Player> getPlayers() {
@@ -22,9 +24,9 @@ public class PlayerService {
     }
 
     public List<Player> addResources(Integer dice) {
-        Board board = new Board();
+        List<Tile> board = tileRepository.findAll();
         List<Player> players = playerRepository.findAll();
-        List<Tile> tiles = Arrays.stream(board.getTiles())
+        List<Tile> tiles = board.stream()
                 .filter(tile -> tile.getToken() == dice)
                 .toList();
         for(Tile tile : tiles) {
@@ -32,8 +34,11 @@ public class PlayerService {
                     .filter(player -> player.howManyBuildingsOnTile(tile) > 0)
                     .toList();
             for(Player player : playerThatReceivesResources) {
-                for(Building building : player.getBuildings()) {
-                    player.addResource(tile.getResourceType(), building.getType().getAmountOfResourcesToAdd());
+                for(int i = 0; i < player.getBuildings().size(); i++){
+                    if(tile.getHasRobber()){
+                        continue;
+                    }
+                    player.addResource(tile.getResourceType(), player.getBuildings().get(i).getType().getAmountOfResourcesToAdd());
                     playerRepository.save(player);
                 }
             }
@@ -42,18 +47,18 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
-    public void placeRobber(Integer tileNumber) {
-        System.out.print(tileNumber);
-    }
-
     public List<Player> buildSettlement(BuildDTO buildDto) throws Exception {
-        Board board = new Board();
+        List<Tile> board = tileRepository.findAll();
         if(doesPlayerNotExist(buildDto)) {
             throw new Exception("Player does not exist");
         }
 
         if(doesTileNotExist(buildDto)) {
             throw new Exception("Tile does not exist. (Choose between 1-19)");
+        }
+
+        if(doesPlayerNotHaveSettlementBeforeBuildingCity(board, buildDto)){
+            throw new Exception("Build a settlement before building a city");
         }
 
         if(isLocationOccupied(board, buildDto)) {
@@ -65,8 +70,9 @@ public class PlayerService {
         }
 
         Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
-        List<Tile> tiles = List.of(board.getTile(buildDto.getTile1()), board.getTile(buildDto.getTile2()), board.getTile(buildDto.getTile3()));
+        List<Tile> tiles = List.of(board.get(buildDto.getTile1()), board.get(buildDto.getTile2()), board.get(buildDto.getTile3()));
         Building building = createSettlementOrCity(buildDto, tiles);
+//        building.replaceSettlementByCity();
         player.addBuilding(building);
         subtractResources(buildDto, player);
         playerRepository.save(player);
@@ -96,18 +102,39 @@ public class PlayerService {
         playerRepository.save(player);
     }
 
-    private boolean doesPlayerNotHaveEnoughResources(BuildDTO buildDTO) {
-        Player player = playerRepository.findById(buildDTO.getPlayerID()).orElseThrow();
-        return player.getGrain() < 1 || player.getLumber() < 1 || player.getWool() < 1 || player.getBrick() < 1;
+    private boolean doesPlayerNotHaveSettlementBeforeBuildingCity(List<Tile> board, BuildDTO buildDto) {
+        Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
+        if(buildDto.getType().equals(BuildingType.CITY)) {
+            if(player.getBuildings().isEmpty()){
+                return true;
+            } else {
+                boolean isSettlementOnLocation = player.getBuildings().stream()
+                        .anyMatch(building ->
+                                building.isOnTile(board.get(buildDto.getTile1())) &&
+                                        building.isOnTile(board.get(buildDto.getTile2())) &&
+                                        building.isOnTile(board.get(buildDto.getTile3())));
+                return !isSettlementOnLocation;
+            }
+        }
+        return false;
     }
 
-    private boolean isLocationOccupied(Board board, BuildDTO buildDto) {
+    private boolean doesPlayerNotHaveEnoughResources(BuildDTO buildDTO) {
+        Player player = playerRepository.findById(buildDTO.getPlayerID()).orElseThrow();
+        if(buildDTO.getType().equals(BuildingType.SETTLEMENT)){
+            return player.getGrain() < 1 || player.getLumber() < 1 || player.getWool() < 1 || player.getBrick() < 1;
+        } else {
+            return player.getBrick() < 3 || player.getOre() < 2;
+        }
+    }
+
+    private boolean isLocationOccupied(List<Tile> board, BuildDTO buildDto) {
         return playerRepository.findAll().stream()
                 .anyMatch(player -> player.getBuildings()
                         .stream().anyMatch(building ->
-                                building.isOnTile(board.getTile(buildDto.getTile1())) &&
-                                        building.isOnTile(board.getTile(buildDto.getTile2())) &&
-                                        building.isOnTile(board.getTile(buildDto.getTile3()))));
+                                building.isOnTile(board.get(buildDto.getTile1())) &&
+                                        building.isOnTile(board.get(buildDto.getTile2())) &&
+                                        building.isOnTile(board.get(buildDto.getTile3()))));
     }
 
     private boolean doesTileNotExist(BuildDTO buildDto) {
@@ -118,5 +145,16 @@ public class PlayerService {
 
     private boolean doesPlayerNotExist(BuildDTO buildDto) {
         return buildDto.getPlayerID() <= 0 || buildDto.getPlayerID() >= 5;
+    }
+
+    public void placeRobber(Integer tileNumber) {
+        List<Tile> tiles = tileRepository.findAll();
+        boolean isRobberPlaced = tiles.stream().anyMatch(Tile::getHasRobber);
+        if(isRobberPlaced){
+            tiles.forEach(tile -> tile.setHasRobber(false));
+        }
+        Tile robbedTile = tiles.get(tileNumber);
+        robbedTile.setHasRobber(true);
+        tileRepository.save(robbedTile);
     }
 }
