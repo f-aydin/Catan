@@ -12,9 +12,10 @@ export function Board() {
   const [tile2, setTile2] = useState(Number);
   const [tile3, setTile3] = useState(Number);
   const [buildingType, setBuildingType] = useState("SETTLEMENT");
+  const [playerTurn, setPlayerTurn] = useState(1);
 
   async function addByDiceRoll() {
-    const diceRoll = 10
+    const diceRoll = 7
       // Math.floor(Math.random() * 6) + 1 + (Math.floor(Math.random() * 6) + 1);
     const response = await fetch("http://localhost:8080/api/addOneByDice", {
       method: "POST",
@@ -27,9 +28,9 @@ export function Board() {
     getRequest();
     // trackChanges(data)
 
-    // if(diceRoll === 7){
-    //   moveRobber(); 
-    // } 
+    if(diceRoll === 7){
+      moveRobber(); 
+    } 
   }
 
   async function moveRobber() {
@@ -39,6 +40,17 @@ export function Board() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(robberPlace - 1)
     });
+
+
+    const robberDiv = document.getElementById("robber");
+    if(robberDiv != null){
+      if(robberPlace > 0 && robberPlace < 20){
+        robberDiv.style.setProperty("right", String(robberLocations[robberPlace - 1][1]));
+        robberDiv.style.setProperty("bottom", String(robberLocations[robberPlace - 1][2]));
+      }
+    }
+
+    
   }
 
   async function getRequest() {
@@ -115,7 +127,12 @@ export function Board() {
         type: buildingType
       })
     });
+  }
+
+  async function changeTurn() {
+    const response = await fetch("http://localhost:8080/api/switchTurn")
     const data = await response.json();
+    setPlayerTurn(data);
   }
 
     // function trackChanges(data : []) {
@@ -125,6 +142,28 @@ export function Board() {
     //     })
     // })
     // }
+
+    const robberLocations = [
+      [1, "590px", "720px"],
+      [2, "430px", "720px"],
+      [3, "270px", "720px"],
+      [4, "670px", "600px"],
+      [5, "510px", "600px"],
+      [6, "350px", "600px"],
+      [7, "190px", "600px"],
+      [8, "750px", "480px"],
+      [9, "590px", "480px"],
+      [10, "430px", "480px"],
+      [11, "270px", "480px"],
+      [12, "110px", "480px"],
+      [13, "670px", "360px"],
+      [14, "510px", "360px"],
+      [15, "350px", "360px"],
+      [16, "190px", "360px"],
+      [17, "590px", "240px"],
+      [18, "430px", "240px"],
+      [19, "270px", "240px"]
+    ]
 
   return (
     <div className="App-header">
@@ -136,6 +175,12 @@ export function Board() {
         Roll Dice
       </button>
       {dice}
+      
+      <div id="playerturn">
+        Player turn: {playerTurn}
+        <button onClick={changeTurn}>End Turn</button>
+      </div>
+       
       <div>
         Player ID:
         <input size={1} placeholder={"ID"} value={playerID} onChange={(e) => setPlayerID(Number(e.target.value))}/>
@@ -254,6 +299,8 @@ export function Board() {
           />
         </Layout>
       </HexGrid>
+
+      <div id="robber" style={{ ["--fromright" as any]: "430px",  ["--frombottom" as any]: "480px"  }}/>
 
       <button id="1" className="vertices" style={{ ["--fromright" as any]: "590px" , ["--frombottom" as any]: "800px"}} onClick={changeOpacity}/>
       <button id="2" className="vertices" style={{ ["--fromright" as any]: "430px", ["--frombottom" as any]: "800px" }} onClick={changeOpacity}/>

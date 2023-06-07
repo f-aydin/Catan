@@ -2,6 +2,7 @@ package com.fatih.catan.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,13 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerServiceTest {
+
+    private PlayerService playerService;
+
+    @Autowired
+    public PlayerServiceTest(PlayerService playerService){
+        this.playerService = playerService;
+    }
 
     @Test
     public void filterTilesBasedOnNumber(){
@@ -28,6 +36,8 @@ class PlayerServiceTest {
 
         Player player1 = new Player(1, List.of(building1, building2));
         Player player2 = new Player(1, List.of(building2));
+
+        playerService.addResources(2);
 
         Tile tile = new Tile(2, 2, Resource.WOOL);
         assertAll(

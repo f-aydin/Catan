@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Integer> {
+    Player findByHasTurn(boolean hasTurn);
 
 }

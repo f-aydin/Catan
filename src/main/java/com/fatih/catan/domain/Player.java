@@ -18,6 +18,7 @@ public class Player {
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "")
     private List<Building> buildings = new ArrayList<>();
+    private boolean hasTurn;
 
     public Player() {
     }
@@ -26,13 +27,14 @@ public class Player {
         this.playerID = playerID;
     }
 
-    public Player(int playerID, int lumber, int wool, int brick, int ore, int grain) {
+    public Player(int playerID, int lumber, int wool, int brick, int ore, int grain, boolean hasTurn) {
         this.playerID = playerID;
         this.lumber = lumber;
         this.wool = wool;
         this.brick = brick;
         this.ore = ore;
         this.grain = grain;
+        this.hasTurn = hasTurn;
     }
 
     public Player(int playerID, List<Building> buildings) {
@@ -86,6 +88,14 @@ public class Player {
 
     public List<Building> getBuildings() {
         return buildings;
+    }
+
+    public boolean isHasTurn() {
+        return hasTurn;
+    }
+
+    public void setHasTurn(boolean hasTurn) {
+        this.hasTurn = hasTurn;
     }
 
     public void addResource(Resource resource, int howManyResourceToGet) {

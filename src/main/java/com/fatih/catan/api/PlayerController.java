@@ -44,4 +44,9 @@ public class PlayerController {
     public void placeRobber(@RequestBody Integer tileNumber){
         playerService.placeRobber(tileNumber);
     }
+
+    @GetMapping("/switchTurn")
+    public int switchTurn(){
+        return playerService.switchTurn();
+    }
 }

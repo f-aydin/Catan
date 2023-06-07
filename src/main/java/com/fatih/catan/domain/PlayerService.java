@@ -6,7 +6,9 @@ import com.fatih.catan.repository.TileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class PlayerService {
@@ -104,19 +106,12 @@ public class PlayerService {
 
     private boolean doesPlayerNotHaveSettlementBeforeBuildingCity(List<Tile> board, BuildDTO buildDto) {
         Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
-        if(buildDto.getType().equals(BuildingType.CITY)) {
-            if(player.getBuildings().isEmpty()){
-                return true;
-            } else {
-                boolean isSettlementOnLocation = player.getBuildings().stream()
-                        .anyMatch(building ->
-                                building.isOnTile(board.get(buildDto.getTile1())) &&
-                                        building.isOnTile(board.get(buildDto.getTile2())) &&
-                                        building.isOnTile(board.get(buildDto.getTile3())));
-                return !isSettlementOnLocation;
-            }
-        }
-        return false;
+        List<Building> playerBuildings = player.getBuildings();
+        List<Building> buildingOnTile = playerBuildings.stream().filter(building ->
+                building.isOnTile(board.get(buildDto.getTile1())) &&
+                building.isOnTile(board.get(buildDto.getTile2())) &&
+                building.isOnTile(board.get(buildDto.getTile3()))).toList();
+        return buildingOnTile.isEmpty() && buildDto.getType().equals(BuildingType.CITY);
     }
 
     private boolean doesPlayerNotHaveEnoughResources(BuildDTO buildDTO) {
@@ -129,12 +124,15 @@ public class PlayerService {
     }
 
     private boolean isLocationOccupied(List<Tile> board, BuildDTO buildDto) {
-        return playerRepository.findAll().stream()
-                .anyMatch(player -> player.getBuildings()
-                        .stream().anyMatch(building ->
-                                building.isOnTile(board.get(buildDto.getTile1())) &&
-                                        building.isOnTile(board.get(buildDto.getTile2())) &&
-                                        building.isOnTile(board.get(buildDto.getTile3()))));
+        List<Player> players = playerRepository.findAll();
+        List<Building> allPlayerBuildings = new ArrayList<>();
+        for(Player player : players) {
+            allPlayerBuildings.addAll(player.getBuildings());
+        }
+
+        List<Tile> tilesToBuildOn = List.of(board.get(buildDto.getTile1()), board.get(buildDto.getTile2()), board.get(buildDto.getTile3()));
+
+        return false;
     }
 
     private boolean doesTileNotExist(BuildDTO buildDto) {
@@ -156,5 +154,38 @@ public class PlayerService {
         Tile robbedTile = tiles.get(tileNumber);
         robbedTile.setHasRobber(true);
         tileRepository.save(robbedTile);
+        stealRandomResourceFromRandomPlayer(robbedTile);
+    }
+
+    private void stealRandomResourceFromRandomPlayer(Tile robbedTile) {
+        Random random = new Random();
+        List<Player> players = playerRepository.findAll();
+        List<Player> playersOnRobbedTile = players.stream().filter(player -> player.hasBuilding(robbedTile)).toList();
+        if(playersOnRobbedTile.size() > 0){
+            Player playerToStealFrom = playersOnRobbedTile.get(random.nextInt(playersOnRobbedTile.size()));
+            Player playerStealing = playerRepository.findByHasTurn(true);
+            Resource resourceToSteal = Resource.randomResource();
+            playerToStealFrom.addResource(resourceToSteal, -1);
+            playerStealing.addResource(resourceToSteal, 1);
+            playerRepository.saveAll(List.of(playerStealing, playerToStealFrom));
+        }
+    }
+
+    public int switchTurn(){
+        List<Player> players = playerRepository.findAll();
+        Player playerThatHasTurn = players.stream().filter(Player::isHasTurn).toList().get(0);
+        int playerIDOfPlayerThatHasTurn = playerThatHasTurn.getPlayerID();
+        playerThatHasTurn.setHasTurn(false);
+        playerRepository.save(playerThatHasTurn);
+        if(playerIDOfPlayerThatHasTurn != 4){
+            Player nextPlayer = playerRepository.findById(playerIDOfPlayerThatHasTurn + 1).orElseThrow();
+            nextPlayer.setHasTurn(true);
+            playerRepository.save(nextPlayer);
+        } else {
+            Player firstPlayer =playerRepository.findById(1).orElseThrow();
+            firstPlayer.setHasTurn(true);
+            playerRepository.save(firstPlayer);
+        }
+        return players.stream().filter(Player::isHasTurn).findAny().orElseThrow().getPlayerID();
     }
 }
