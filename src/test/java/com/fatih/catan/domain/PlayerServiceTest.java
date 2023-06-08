@@ -2,7 +2,6 @@ package com.fatih.catan.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,13 +10,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerServiceTest {
-
-    private PlayerService playerService;
-
-    @Autowired
-    public PlayerServiceTest(PlayerService playerService){
-        this.playerService = playerService;
-    }
 
     @Test
     public void filterTilesBasedOnNumber(){
@@ -36,8 +28,6 @@ class PlayerServiceTest {
 
         Player player1 = new Player(1, List.of(building1, building2));
         Player player2 = new Player(1, List.of(building2));
-
-        playerService.addResources(2);
 
         Tile tile = new Tile(2, 2, Resource.WOOL);
         assertAll(
@@ -79,6 +69,8 @@ class PlayerServiceTest {
         );
     }
 
+
+
     @Test
     @DisplayName("addingResources method should add 1 resource if settlement is built and 2 if city is built")
     void addingResourcesWithCityAndSettlement(){
@@ -118,9 +110,9 @@ class PlayerServiceTest {
         List<Tile> tilesBuilding1 = List.of(new Tile(1, 10, Resource.ORE), new Tile(2, 2, Resource.WOOL), new Tile(5, 6, Resource.BRICK));
         Building building1 = new Building(tilesBuilding1);
         Player player1 = new Player(1, List.of(building1));
-        List<Tile> tilesForCity = List.of(new Tile(1, 10, Resource.ORE), new Tile(2, 2, Resource.WOOL), new Tile(5, 6, Resource.BRICK));
+        List<Tile> tilesForNewCity = List.of(new Tile(1, 10, Resource.ORE), new Tile(2, 2, Resource.WOOL), new Tile(5, 6, Resource.BRICK));
 
-        Building newCity = new Building(BuildingType.CITY, tilesForCity);
+        Building newCity = new Building(BuildingType.CITY, tilesForNewCity);
     }
 
 
@@ -154,13 +146,10 @@ class PlayerServiceTest {
                 }
             }
         }
-
         assertAll(
                 () -> assertEquals(0, player1.getOre()),
                 () -> assertEquals(0, player2.getOre()),
                 () -> assertEquals(0, player1.getBrick())
         );
-
-
     }
 }

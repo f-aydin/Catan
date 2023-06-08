@@ -74,11 +74,25 @@ public class PlayerService {
         Player player = playerRepository.findById(buildDto.getPlayerID()).orElseThrow();
         List<Tile> tiles = List.of(board.get(buildDto.getTile1()), board.get(buildDto.getTile2()), board.get(buildDto.getTile3()));
         Building building = createSettlementOrCity(buildDto, tiles);
-//        building.replaceSettlementByCity();
-        player.addBuilding(building);
+        if(buildDto.getType().equals(BuildingType.CITY)){
+            replaceSettlementByCity(buildDto, board);
+        } else {
+            player.addBuilding(building);
+        }
         subtractResources(buildDto, player);
         playerRepository.save(player);
         return playerRepository.findAll();
+    }
+
+    private void replaceSettlementByCity(BuildDTO buildDTO, List<Tile> board) {
+        Player player = playerRepository.findById(buildDTO.getPlayerID()).orElseThrow();
+        List<Building> playerBuildings = player.getBuildings();
+        List<Tile> tilesToBeBuildOn = List.of(board.get(buildDTO.getTile1()), board.get(buildDTO.getTile2()), board.get(buildDTO.getTile3()));
+        for(Building building : playerBuildings){
+            if(building.isOnTile(tilesToBeBuildOn.get(0)) && building.isOnTile(tilesToBeBuildOn.get(1)) && building.isOnTile(tilesToBeBuildOn.get(2)) && building.getType().equals(BuildingType.SETTLEMENT)){
+                building.setBuildingTypeToCity();
+            }
+        }
     }
 
     private Building createSettlementOrCity(BuildDTO buildDto, List<Tile> tiles) {
@@ -129,9 +143,15 @@ public class PlayerService {
         for(Player player : players) {
             allPlayerBuildings.addAll(player.getBuildings());
         }
-
         List<Tile> tilesToBuildOn = List.of(board.get(buildDto.getTile1()), board.get(buildDto.getTile2()), board.get(buildDto.getTile3()));
-
+        for(Building building : allPlayerBuildings) {
+            if(building.isOnTile(tilesToBuildOn.get(0)) &&
+                    building.isOnTile(tilesToBuildOn.get(1)) &&
+                    building.isOnTile(tilesToBuildOn.get(2)) &&
+                    buildDto.getType().equals(BuildingType.SETTLEMENT)){
+                return true;
+            }
+        }
         return false;
     }
 

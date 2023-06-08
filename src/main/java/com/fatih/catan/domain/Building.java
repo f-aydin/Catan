@@ -43,7 +43,7 @@ public class Building {
         return tiles.contains(tile);
     }
 
-    public void replaceSettlementByCity(){
+    public void setBuildingTypeToCity(){
         if(this.getType().equals(BuildingType.SETTLEMENT)){
             this.type = BuildingType.CITY;
         }

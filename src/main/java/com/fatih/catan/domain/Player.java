@@ -1,9 +1,12 @@
 package com.fatih.catan.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+@Builder
 
 @Entity
 public class Player {
@@ -17,7 +20,7 @@ public class Player {
     private int grain;
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "")
-    private List<Building> buildings = new ArrayList<>();
+    private List<Building> buildings;
     private boolean hasTurn;
 
     public Player() {
@@ -25,6 +28,22 @@ public class Player {
 
     public Player(int playerID) {
         this.playerID = playerID;
+    }
+
+    public Player(int playerID, int lumber, int wool, int brick, int ore, int grain, List<Building> buildings, boolean hasTurn) {
+        this.playerID = playerID;
+        this.lumber = lumber;
+        this.wool = wool;
+        this.brick = brick;
+        this.ore = ore;
+        this.grain = grain;
+        this.buildings = buildings;
+        this.hasTurn = hasTurn;
+    }
+
+    public Player(int playerID, List<Building> buildings) {
+        this.playerID = playerID;
+        this.buildings = buildings;
     }
 
     public Player(int playerID, int lumber, int wool, int brick, int ore, int grain, boolean hasTurn) {
@@ -35,11 +54,6 @@ public class Player {
         this.ore = ore;
         this.grain = grain;
         this.hasTurn = hasTurn;
-    }
-
-    public Player(int playerID, List<Building> buildings) {
-        this.playerID = playerID;
-        this.buildings = buildings;
     }
 
     public int getPlayerID() {

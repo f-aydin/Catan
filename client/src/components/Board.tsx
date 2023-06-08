@@ -3,38 +3,38 @@ import { useEffect, useState, MouseEvent } from "react";
 import board from '../icons/catan_tile.png'
 
 export function Board() {
-  const [roadVisible, setRoadVisible] = useState(false);
   const [playerResources, setPlayerResources] = useState([]);
-  const [resourcesChange, setResourcesChange] = useState([]);
+  // const [resourcesChange, setResourcesChange] = useState([]);
   const [dice, setDice] = useState(0);
-  const [playerID, setPlayerID] = useState(Number);
   const [tile1, setTile1] = useState(Number);
   const [tile2, setTile2] = useState(Number);
   const [tile3, setTile3] = useState(Number);
   const [buildingType, setBuildingType] = useState("SETTLEMENT");
   const [playerTurn, setPlayerTurn] = useState(1);
+  const [diceRolled, setDiceRolled] = useState(false);
 
   async function addByDiceRoll() {
-    const diceRoll = 7
-      // Math.floor(Math.random() * 6) + 1 + (Math.floor(Math.random() * 6) + 1);
+    const diceRoll = 
+      Math.floor(Math.random() * 6) + 1 + (Math.floor(Math.random() * 6) + 1);
     const response = await fetch("http://localhost:8080/api/addOneByDice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(diceRoll)
     });
     const data = await response.json();
-    setResourcesChange(data);
     setDice(diceRoll);
     getRequest();
-    // trackChanges(data)
-
+    // changeDiceRollButtonIfRolled()
     if(diceRoll === 7){
       moveRobber(); 
     } 
   }
 
   async function moveRobber() {
-    const robberPlace = Number(prompt("Choose a tile number: "))
+    const robberPlace = Number(prompt("Choose a tile number between 1 and 19: "))
+    while(robberPlace < 1 && robberPlace > 19){
+      const robberPlace = Number(prompt("Choose a tile number between 1 and 19: "))
+    }
     const response = await fetch("http://localhost:8080/api/placeRobberOnTile ", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -49,8 +49,6 @@ export function Board() {
         robberDiv.style.setProperty("bottom", String(robberLocations[robberPlace - 1][2]));
       }
     }
-
-    
   }
 
   async function getRequest() {
@@ -97,7 +95,7 @@ export function Board() {
         button.style.setProperty("border-radius", "0%")
       }
       button.style.setProperty("opacity", "1");
-      switch(playerID){
+      switch(playerTurn){
         case 1:
           button.style.setProperty("background-color", "red");
           break;
@@ -120,7 +118,7 @@ export function Board() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        playerID: playerID,
+        playerID: playerTurn,
         tile1: tile1 - 1,
         tile2: tile2 - 1,
         tile3: tile3 - 1,
@@ -129,19 +127,31 @@ export function Board() {
     });
   }
 
+  function changeButtonDisabilityByClicking() {
+    const diceRollButton = document.getElementById("diceRoll") as HTMLButtonElement;
+    const switchTurnButton = document.getElementById("switchTurn") as HTMLButtonElement;
+    const buildButton = document.getElementById("buildButton") as HTMLButtonElement;
+    if(diceRollButton != null && switchTurnButton != null && buildButton != null){
+      if(diceRolled && switchTurnButton && buildButton){
+        diceRollButton.disabled = false;
+        switchTurnButton.disabled = true;
+        buildButton.disabled = true;
+      } else {
+        diceRollButton.disabled = true;
+        switchTurnButton.disabled = false;
+        buildButton.disabled = false;
+
+      }
+    }
+  }
+
   async function changeTurn() {
     const response = await fetch("http://localhost:8080/api/switchTurn")
     const data = await response.json();
     setPlayerTurn(data);
   }
 
-    // function trackChanges(data : []) {
-    // const diff = data.filter((obj1 : any) => {
-    //     return !playerResources.some((obj2) => {
-    //         return JSON.stringify(obj1, ["brick", "grain", "wool", "lumber", "ore"]) == JSON.stringify(obj2, ["brick", "grain", "wool", "lumber", "ore"])
-    //     })
-    // })
-    // }
+
 
     const robberLocations = [
       [1, "590px", "720px"],
@@ -167,9 +177,9 @@ export function Board() {
 
   return (
     <div className="App-header">
-      <button
+      <button id="diceRoll"
         onClick={() => {
-          addByDiceRoll();
+          setDiceRolled(true); addByDiceRoll(); changeButtonDisabilityByClicking()
         }}
       >
         Roll Dice
@@ -178,12 +188,10 @@ export function Board() {
       
       <div id="playerturn">
         Player turn: {playerTurn}
-        <button onClick={changeTurn}>End Turn</button>
+        <button id="switchTurn" onClick={() => {changeTurn(); setDiceRolled(false); changeButtonDisabilityByClicking()}}>End Turn</button>
       </div>
        
       <div>
-        Player ID:
-        <input size={1} placeholder={"ID"} value={playerID} onChange={(e) => setPlayerID(Number(e.target.value))}/>
         Tile 1:
         <input size={1} placeholder={"Tile 1"} value={tile1} onChange={(e) => setTile1(Number(e.target.value))} />
         Tile 2:
@@ -374,7 +382,6 @@ export function Board() {
       <button id="54" className="vertices" style={{ ["--fromright" as any]: "270px", ["--frombottom" as any]: "160px" }} onClick={changeOpacity}/>
 
       </div>
-      {/* {roadVisible && <div className="rectangle" />} */}
     </div>
   );
 }
