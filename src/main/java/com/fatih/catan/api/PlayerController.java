@@ -1,8 +1,10 @@
 package com.fatih.catan.api;
 
+import com.fatih.catan.domain.DevelopmentCard;
 import com.fatih.catan.domain.PlayerService;
 import com.fatih.catan.domain.Player;
 import com.fatih.catan.dto.BuildDTO;
+import com.fatih.catan.dto.DevDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +50,15 @@ public class PlayerController {
     @GetMapping("/switchTurn")
     public int switchTurn(){
         return playerService.switchTurn();
+    }
+
+    @PostMapping("/buyDevCard")
+    public DevelopmentCard buyDevCard(@RequestBody Integer playerID){
+        return playerService.buyDevCard(playerID);
+    }
+
+    @PostMapping("useYearOfPlenty")
+    public void useYearOfPlenty(@RequestBody DevDTO devDTO){
+        playerService.yearOfPlenty(devDTO);
     }
 }

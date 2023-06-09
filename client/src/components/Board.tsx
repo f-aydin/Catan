@@ -4,7 +4,6 @@ import board from '../icons/catan_tile.png'
 
 export function Board() {
   const [playerResources, setPlayerResources] = useState([]);
-  // const [resourcesChange, setResourcesChange] = useState([]);
   const [dice, setDice] = useState(0);
   const [tile1, setTile1] = useState(Number);
   const [tile2, setTile2] = useState(Number);
@@ -24,7 +23,6 @@ export function Board() {
     const data = await response.json();
     setDice(diceRoll);
     getRequest();
-    // changeDiceRollButtonIfRolled()
     if(diceRoll === 7){
       moveRobber(); 
     } 
@@ -140,7 +138,6 @@ export function Board() {
         diceRollButton.disabled = true;
         switchTurnButton.disabled = false;
         buildButton.disabled = false;
-
       }
     }
   }
@@ -150,8 +147,6 @@ export function Board() {
     const data = await response.json();
     setPlayerTurn(data);
   }
-
-
 
     const robberLocations = [
       [1, "590px", "720px"],
@@ -174,6 +169,35 @@ export function Board() {
       [18, "430px", "240px"],
       [19, "270px", "240px"]
     ]
+
+  async function buyDevelopmentCard(){
+    const response = await fetch("http://localhost:8080/api/buyDevCard", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: String(playerTurn)
+    }) 
+    const data = response.json();
+    console.log(data);
+    if(await data == "KNIGHT"){
+      moveRobber();
+    } else if(await data == "YEAROFPLENTY"){
+      const resource = prompt("choose the resource to get from the bank: ");
+      if(resource != null){
+        getResourcesYearOfPlenty(resource.toUpperCase());
+      } 
+    }
+  }
+
+  async function getResourcesYearOfPlenty(resource : String | null) {
+    const response = await fetch("http://localhost:8080/api/useYearOfPlenty", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerID: Number(playerTurn),
+        type: String(resource)
+      })
+    }) 
+  }
 
   return (
     <div className="App-header">
@@ -213,6 +237,7 @@ export function Board() {
         </button>
       </div>
       {writePlayerResources(playerResources)}
+      <button onClick={buyDevelopmentCard}>Buy Development Card</button>
       <div id="hover">View Board: </div>
       <img id="catantiles" src={board}></img>
 

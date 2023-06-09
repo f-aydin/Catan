@@ -1,12 +1,9 @@
 package com.fatih.catan.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-@Builder
 
 @Entity
 public class Player {
@@ -22,6 +19,8 @@ public class Player {
     @JoinColumn(name = "")
     private List<Building> buildings;
     private boolean hasTurn;
+    private int victoryPoints;
+    private List<DevelopmentCard> devCards = new ArrayList<>();
 
     public Player() {
     }
@@ -134,6 +133,14 @@ public class Player {
 
             }
         }
+    }
+
+    public void addVictoryPoint(){
+        victoryPoints++;
+    }
+
+    public void addCard(DevelopmentCard card){
+        devCards.add(card);
     }
 
     public boolean hasBuilding(Tile tile) {

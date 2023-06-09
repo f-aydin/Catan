@@ -1,6 +1,7 @@
 package com.fatih.catan.domain;
 
 import com.fatih.catan.dto.BuildDTO;
+import com.fatih.catan.dto.DevDTO;
 import com.fatih.catan.repository.PlayerRepository;
 import com.fatih.catan.repository.TileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.Random;
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final TileRepository tileRepository;
+    private final Deck deck = new Deck();
 
     @Autowired
     public PlayerService(PlayerRepository playerRepository, TileRepository tileRepository) {
@@ -79,7 +81,7 @@ public class PlayerService {
         } else {
             player.addBuilding(building);
         }
-        subtractResources(buildDto, player);
+        subtractResourcesForBuilding(buildDto, player);
         playerRepository.save(player);
         return playerRepository.findAll();
     }
@@ -105,7 +107,7 @@ public class PlayerService {
         return building;
     }
 
-    private void subtractResources(BuildDTO buildDTO, Player player) {
+    private void subtractResourcesForBuilding(BuildDTO buildDTO, Player player) {
         if(buildDTO.getType().equals(BuildingType.SETTLEMENT)){
             player.setBrick(player.getBrick()-1);
             player.setWool(player.getWool()-1);
@@ -207,5 +209,28 @@ public class PlayerService {
             playerRepository.save(firstPlayer);
         }
         return players.stream().filter(Player::isHasTurn).findAny().orElseThrow().getPlayerID();
+    }
+
+    public DevelopmentCard buyDevCard(Integer playerID) {
+        Player player = playerRepository.findById(playerID).orElseThrow();
+        DevelopmentCard drawnCard = deck.drawCard();
+        player.addCard(drawnCard);
+        player.setOre(player.getOre() - 1);
+        player.setGrain(player.getGrain() - 1);
+        player.setWool(player.getWool() - 1);
+        switch(drawnCard){
+            case KNIGHT -> placeRobber(0);
+            case VICTORYPOINT -> {
+                player.addVictoryPoint();
+                playerRepository.save(player);
+            }
+        }
+        return drawnCard;
+    }
+
+    public void yearOfPlenty(DevDTO devDTO) {
+        Player player = playerRepository.findById(devDTO.getPlayerID()).orElseThrow();
+        player.addResource(devDTO.getType(), 2);
+        playerRepository.save(player);
     }
 }
