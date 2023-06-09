@@ -211,13 +211,11 @@ public class PlayerService {
         return players.stream().filter(Player::isHasTurn).findAny().orElseThrow().getPlayerID();
     }
 
-    public DevelopmentCard buyDevCard(Integer playerID) {
+    public DevelopmentCard buyDevCard(Integer playerID) throws Exception {
         Player player = playerRepository.findById(playerID).orElseThrow();
         DevelopmentCard drawnCard = deck.drawCard();
         player.addCard(drawnCard);
-        player.setOre(player.getOre() - 1);
-        player.setGrain(player.getGrain() - 1);
-        player.setWool(player.getWool() - 1);
+        subtractResourcesForDevCard(player);
         switch(drawnCard){
             case KNIGHT -> placeRobber(0);
             case VICTORYPOINT -> {
@@ -226,6 +224,17 @@ public class PlayerService {
             }
         }
         return drawnCard;
+    }
+
+    private void subtractResourcesForDevCard(Player player) throws Exception {
+        if(player.getGrain() > 0 && player.getOre() > 0 && player.getWool() > 0){
+            player.setOre(player.getOre() - 1);
+            player.setGrain(player.getGrain() - 1);
+            player.setWool(player.getWool() - 1);
+            playerRepository.save(player);
+        } else {
+            throw new Exception("Not enough resources");
+        }
     }
 
     public void yearOfPlenty(DevDTO devDTO) {

@@ -53,7 +53,7 @@ public class PlayerController {
     }
 
     @PostMapping("/buyDevCard")
-    public DevelopmentCard buyDevCard(@RequestBody Integer playerID){
+    public DevelopmentCard buyDevCard(@RequestBody Integer playerID) throws Exception {
         return playerService.buyDevCard(playerID);
     }
 
