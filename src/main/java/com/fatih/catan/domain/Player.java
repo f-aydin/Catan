@@ -17,7 +17,10 @@ public class Player {
     private int grain;
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "")
-    private List<Building> buildings = new ArrayList<>();
+    private List<Building> buildings;
+    private boolean hasTurn;
+    private int victoryPoints;
+    private List<DevelopmentCard> devCards = new ArrayList<>();
 
     public Player() {
     }
@@ -26,18 +29,30 @@ public class Player {
         this.playerID = playerID;
     }
 
-    public Player(int playerID, int lumber, int wool, int brick, int ore, int grain) {
+    public Player(int playerID, int lumber, int wool, int brick, int ore, int grain, List<Building> buildings, boolean hasTurn) {
         this.playerID = playerID;
         this.lumber = lumber;
         this.wool = wool;
         this.brick = brick;
         this.ore = ore;
         this.grain = grain;
+        this.buildings = buildings;
+        this.hasTurn = hasTurn;
     }
 
     public Player(int playerID, List<Building> buildings) {
         this.playerID = playerID;
         this.buildings = buildings;
+    }
+
+    public Player(int playerID, int lumber, int wool, int brick, int ore, int grain, boolean hasTurn) {
+        this.playerID = playerID;
+        this.lumber = lumber;
+        this.wool = wool;
+        this.brick = brick;
+        this.ore = ore;
+        this.grain = grain;
+        this.hasTurn = hasTurn;
     }
 
     public int getPlayerID() {
@@ -84,6 +99,18 @@ public class Player {
         this.grain = grain;
     }
 
+    public List<Building> getBuildings() {
+        return buildings;
+    }
+
+    public boolean isHasTurn() {
+        return hasTurn;
+    }
+
+    public void setHasTurn(boolean hasTurn) {
+        this.hasTurn = hasTurn;
+    }
+
     public void addResource(Resource resource, int howManyResourceToGet) {
         switch(resource) {
             case LUMBER -> {
@@ -102,7 +129,18 @@ public class Player {
             case WOOL -> {
                 wool += howManyResourceToGet;
             }
+            case NULL -> {
+
+            }
         }
+    }
+
+    public void addVictoryPoint(){
+        victoryPoints++;
+    }
+
+    public void addCard(DevelopmentCard card){
+        devCards.add(card);
     }
 
     public boolean hasBuilding(Tile tile) {

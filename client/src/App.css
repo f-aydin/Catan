@@ -51,3 +51,13 @@ svg g text {
 #catantiles{
   display: none;
 }
+
+#robber{
+  position: absolute;
+  border-radius: 50%;
+  bottom: var(--frombottom);
+  right: var(--fromright);
+  width: 50px;
+  height: 50px;
+  background-color: black;
+}

@@ -1,8 +1,10 @@
 package com.fatih.catan.api;
 
+import com.fatih.catan.domain.DevelopmentCard;
 import com.fatih.catan.domain.PlayerService;
 import com.fatih.catan.domain.Player;
 import com.fatih.catan.dto.BuildDTO;
+import com.fatih.catan.dto.DevDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +40,25 @@ public class PlayerController {
     @PostMapping("/buildSettlement")
     public List<Player> buildSettlement(@RequestBody BuildDTO buildDTO) throws Exception {
         return playerService.buildSettlement(buildDTO);
+    }
+
+    @PostMapping("/placeRobberOnTile")
+    public void placeRobber(@RequestBody Integer tileNumber){
+        playerService.placeRobber(tileNumber);
+    }
+
+    @GetMapping("/switchTurn")
+    public int switchTurn(){
+        return playerService.switchTurn();
+    }
+
+    @PostMapping("/buyDevCard")
+    public DevelopmentCard buyDevCard(@RequestBody Integer playerID) throws Exception {
+        return playerService.buyDevCard(playerID);
+    }
+
+    @PostMapping("useYearOfPlenty")
+    public void useYearOfPlenty(@RequestBody DevDTO devDTO){
+        playerService.yearOfPlenty(devDTO);
     }
 }

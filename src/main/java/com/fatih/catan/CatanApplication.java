@@ -35,10 +35,10 @@ public class CatanApplication {
 	@Transactional
 	public CommandLineRunner demo(PlayerRepository playerRepository, TileRepository tileRepository){
 		return (args) -> {
-			Player player1 = new Player(1, 4, 4, 4, 4, 4);
-			Player player2 = new Player(2, 4, 4, 4, 4, 4);
-			Player player3 = new Player(3, 4, 4, 4, 4, 4);
-			Player player4 = new Player(4, 4, 4, 4, 4, 4);
+			Player player1 = new Player(1, 4, 4, 4, 4, 4, true);
+			Player player2 = new Player(2, 4, 4, 4, 4, 4, false);
+			Player player3 = new Player(3, 4, 4, 4, 4, 4, false);
+			Player player4 = new Player(4, 4, 4, 4, 4, 4, false);
 			playerRepository.saveAll(List.of(player1, player2, player3, player4));
 
 			Board board = new Board();
