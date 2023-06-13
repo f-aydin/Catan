@@ -20,7 +20,9 @@ public class Player {
     private List<Building> buildings;
     private boolean hasTurn;
     private int victoryPoints;
-    private List<DevelopmentCard> devCards = new ArrayList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @Enumerated(EnumType.STRING)
+    private List<Card> devCards = new ArrayList<>();
 
     public Player() {
     }
@@ -79,6 +81,18 @@ public class Player {
         return grain;
     }
 
+    public int getVictoryPoints() {
+        return victoryPoints;
+    }
+
+    public List<Card> getDevCards() {
+        return devCards;
+    }
+
+    public List<Building> getBuildings() {
+        return buildings;
+    }
+
     public void setLumber(int lumber) {
         this.lumber = lumber;
     }
@@ -99,10 +113,6 @@ public class Player {
         this.grain = grain;
     }
 
-    public List<Building> getBuildings() {
-        return buildings;
-    }
-
     public boolean isHasTurn() {
         return hasTurn;
     }
@@ -116,7 +126,6 @@ public class Player {
             case LUMBER -> {
                 lumber += howManyResourceToGet;
             }
-
             case ORE -> {
                 ore += howManyResourceToGet;
             }
@@ -129,18 +138,36 @@ public class Player {
             case WOOL -> {
                 wool += howManyResourceToGet;
             }
-            case NULL -> {
+            case NULL -> {}
+        }
+    }
 
+    public void setResourceToZero(Resource resource) {
+        switch(resource) {
+            case LUMBER -> {
+                lumber = 0;
+            }
+            case ORE -> {
+                ore = 0;
+            }
+            case GRAIN -> {
+                grain = 0;
+            }
+            case BRICK -> {
+                brick = 0;
+            }
+            case WOOL -> {
+                wool = 0;
             }
         }
     }
 
-    public void addVictoryPoint(){
-        victoryPoints++;
+    public void addCard(Card card){
+        devCards.add(card);
     }
 
-    public void addCard(DevelopmentCard card){
-        devCards.add(card);
+    public void addVictoryPoint(){
+        victoryPoints++;
     }
 
     public boolean hasBuilding(Tile tile) {

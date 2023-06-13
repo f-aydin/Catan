@@ -1,0 +1,8 @@
+#card{
+    overflow: hidden;
+
+}
+
+#card:hover{
+    transform: scale(5);
+}

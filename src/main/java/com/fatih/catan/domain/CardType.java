@@ -1,9 +1,9 @@
 package com.fatih.catan.domain;
 
-public enum DevelopmentCard {
+public enum CardType {
     KNIGHT,
     ROADBUILDING,
     YEAROFPLENTY,
     MONOPOLY,
-    VICTORYPOINT
+    VICTORYPOINT;
 }

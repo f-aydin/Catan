@@ -5,29 +5,28 @@ import java.util.Collections;
 import java.util.List;
 
 public class Deck {
-    private final List<DevelopmentCard> deck;
+    private final List<Card> cards = new ArrayList<>();
+
     public Deck() {
-        deck = new ArrayList<>();
-        for(int i = 0; i < 14; i++){
-            deck.add(DevelopmentCard.KNIGHT);
+        for(int i = 0; i < 14; i++) {
+            this.cards.add(new Card(CardType.KNIGHT));
         }
         for(int i = 0; i < 5; i++) {
-            deck.add(DevelopmentCard.VICTORYPOINT);
+            this.cards.add(new Card(CardType.VICTORYPOINT));
         }
-        deck.add(DevelopmentCard.YEAROFPLENTY);
-        deck.add(DevelopmentCard.YEAROFPLENTY);
-        deck.add(DevelopmentCard.MONOPOLY);
-        deck.add(DevelopmentCard.MONOPOLY);
-        deck.add(DevelopmentCard.ROADBUILDING);
-        deck.add(DevelopmentCard.ROADBUILDING);
-        Collections.shuffle(deck);
+        for(int i = 0; i < 2; i++) {
+            this.cards.add(new Card(CardType.YEAROFPLENTY));
+            this.cards.add(new Card(CardType.MONOPOLY));
+            this.cards.add(new Card(CardType.ROADBUILDING));
+        }
+        Collections.shuffle(cards);
     }
 
-    public List<DevelopmentCard> getDeck() {
-        return deck;
+    public List<Card> getCards() {
+        return cards;
     }
 
-    public DevelopmentCard drawCard(){
-        return deck.remove(0);
+    public Card drawCard(){
+        return cards.remove(0);
     }
 }
