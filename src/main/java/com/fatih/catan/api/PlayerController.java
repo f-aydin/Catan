@@ -1,6 +1,6 @@
 package com.fatih.catan.api;
 
-import com.fatih.catan.domain.DevelopmentCard;
+import com.fatih.catan.domain.CardType;
 import com.fatih.catan.domain.PlayerService;
 import com.fatih.catan.domain.Player;
 import com.fatih.catan.dto.BuildDTO;
@@ -53,12 +53,17 @@ public class PlayerController {
     }
 
     @PostMapping("/buyDevCard")
-    public DevelopmentCard buyDevCard(@RequestBody Integer playerID) throws Exception {
+    public CardType buyDevCard(@RequestBody Integer playerID) throws Exception {
         return playerService.buyDevCard(playerID);
     }
 
     @PostMapping("useYearOfPlenty")
     public void useYearOfPlenty(@RequestBody DevDTO devDTO){
         playerService.yearOfPlenty(devDTO);
+    }
+
+    @PostMapping("useMonopoly")
+    public void useMonopoly(@RequestBody DevDTO devDTO){
+        playerService.monopoly(devDTO);
     }
 }

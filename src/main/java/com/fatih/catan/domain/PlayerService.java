@@ -211,19 +211,23 @@ public class PlayerService {
         return players.stream().filter(Player::isHasTurn).findAny().orElseThrow().getPlayerID();
     }
 
-    public DevelopmentCard buyDevCard(Integer playerID) throws Exception {
+    public CardType buyDevCard(Integer playerID) throws Exception {
         Player player = playerRepository.findById(playerID).orElseThrow();
-        DevelopmentCard drawnCard = deck.drawCard();
-        player.addCard(drawnCard);
         subtractResourcesForDevCard(player);
-        switch(drawnCard){
+        Card drawnCard = deck.drawCard();
+        CardType drawnCardType = drawnCard.getType();
+        System.out.println(drawnCard);
+        System.out.println(drawnCardType);
+        player.addCard(drawnCard);
+        switch(drawnCardType){
             case KNIGHT -> placeRobber(0);
             case VICTORYPOINT -> {
                 player.addVictoryPoint();
                 playerRepository.save(player);
             }
+            case MONOPOLY, ROADBUILDING, YEAROFPLENTY -> { playerRepository.save(player);}
         }
-        return drawnCard;
+        return drawnCardType;
     }
 
     private void subtractResourcesForDevCard(Player player) throws Exception {
@@ -239,7 +243,22 @@ public class PlayerService {
 
     public void yearOfPlenty(DevDTO devDTO) {
         Player player = playerRepository.findById(devDTO.getPlayerID()).orElseThrow();
-        player.addResource(devDTO.getType(), 2);
+        Resource resourceToGet = devDTO.getType();
+        int amountToGetFromTheBank = 2 ;
+        player.addResource(resourceToGet, amountToGetFromTheBank);
         playerRepository.save(player);
+    }
+
+    public void monopoly(DevDTO devDTO) {
+        Player playerThatSteals = playerRepository.findById(devDTO.getPlayerID()).orElseThrow();
+        List<Player> allPlayers = playerRepository.findAll();
+        Resource resourceToSteal = devDTO.getType();
+        int amountOfResourcesToSteal = 0;
+        for(Player player : allPlayers){
+            amountOfResourcesToSteal = amountOfResourcesToSteal + player.getWool();
+        }
+        allPlayers.forEach(player -> player.setResourceToZero(resourceToSteal));
+        playerThatSteals.addResource(resourceToSteal, amountOfResourcesToSteal);
+        playerRepository.saveAll(allPlayers);
     }
 }

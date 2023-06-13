@@ -1,6 +1,8 @@
 import { HexGrid, Hexagon, Layout, Pattern, Text } from "react-hexgrid";
 import { useEffect, useState, MouseEvent } from "react";
 import board from '../icons/catan_tile.png'
+import Card from './Card'
+import Button from './Button'
 
 export function Board() {
   const [playerResources, setPlayerResources] = useState([]);
@@ -11,6 +13,8 @@ export function Board() {
   const [buildingType, setBuildingType] = useState("SETTLEMENT");
   const [playerTurn, setPlayerTurn] = useState(1);
   const [diceRolled, setDiceRolled] = useState(false);
+  const [showCard, setShowCard] = useState(false);
+  
 
   async function addByDiceRoll() {
     const diceRoll = 
@@ -29,9 +33,9 @@ export function Board() {
   }
 
   async function moveRobber() {
-    const robberPlace = Number(prompt("Choose a tile number between 1 and 19: "))
+    let robberPlace = Number(prompt("Choose a tile number between 1 and 19: "))
     while(robberPlace < 1 && robberPlace > 19){
-      const robberPlace = Number(prompt("Choose a tile number between 1 and 19: "))
+      robberPlace = Number(prompt("Choose a tile number between 1 and 19: "))
     }
     const response = await fetch("http://localhost:8080/api/placeRobberOnTile ", {
       method: "POST",
@@ -39,14 +43,11 @@ export function Board() {
       body: JSON.stringify(robberPlace - 1)
     });
 
-
     const robberDiv = document.getElementById("robber");
-    if(robberDiv != null){
-      if(robberPlace > 0 && robberPlace < 20){
+      if(robberDiv != null && robberPlace > 0 && robberPlace < 20){
         robberDiv.style.setProperty("right", String(robberLocations[robberPlace - 1][1]));
         robberDiv.style.setProperty("bottom", String(robberLocations[robberPlace - 1][2]));
       }
-    }
   }
 
   async function getRequest() {
@@ -57,23 +58,26 @@ export function Board() {
 
   function writePlayerResources(playerResources: any) {
     const listResources = playerResources.map(
-      (item: {
+      (player: {
         brick: any;
         wool: any;
         grain: any;
         lumber: any;
         ore: any;
         playerID: any;
+        devCards: any;
       }) => (
         <div className="playerResources">
-          <li key={item.playerID}>
+          <li key={player.playerID}>
             <p>
-              <b>Player: {item.playerID + " > "} </b>
-              Wool: {item.wool + " | "}
-              Ore: {item.ore + " | "}
-              Brick: {item.brick + " | "}
-              Lumber: {item.lumber + " | "}
-              Grain: {item.grain}
+              <b>Player: {player.playerID + " > "} </b>
+              Wool: {player.wool + " | "}
+              Ore: {player.ore + " | "}
+              Brick: {player.brick + " | "}
+              Lumber: {player.lumber + " | "}
+              Grain: {player.grain + " | "}
+              DevCards:
+              {player.devCards.map((card : any) => showCard && <Card cardType= {card.type} />)}
             </p>
           </li>
         </div>
@@ -177,19 +181,34 @@ export function Board() {
       body: String(playerTurn)
     }) 
     const data = response.json();
-    console.log(data);
     if(await data == "KNIGHT"){
       moveRobber();
     } else if(await data == "YEAROFPLENTY"){
       const resource = prompt("choose the resource to get from the bank: ");
       if(resource != null){
         getResourcesYearOfPlenty(resource.toUpperCase());
-      } 
+      }
+    } else if(await data == "MONOPOLY"){
+      const resource = prompt("choose the resource to steal from all players: ")
+      if(resource != null){
+        getResourcesMonopoly(resource.toUpperCase());
+      }
     }
   }
 
   async function getResourcesYearOfPlenty(resource : String | null) {
     const response = await fetch("http://localhost:8080/api/useYearOfPlenty", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerID: Number(playerTurn),
+        type: String(resource)
+      })
+    }) 
+  }
+
+  async function getResourcesMonopoly(resource : String | null) {
+    const response = await fetch("http://localhost:8080/api/useMonopoly", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
