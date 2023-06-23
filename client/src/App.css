@@ -61,3 +61,9 @@ svg g text {
   height: 50px;
   background-color: black;
 }
+
+#trade{
+  position: relative;
+  left: 1250px;
+  bottom: 250px;
+}

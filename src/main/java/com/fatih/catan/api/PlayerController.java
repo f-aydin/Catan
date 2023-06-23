@@ -5,6 +5,7 @@ import com.fatih.catan.domain.PlayerService;
 import com.fatih.catan.domain.Player;
 import com.fatih.catan.dto.BuildDTO;
 import com.fatih.catan.dto.DevDTO;
+import com.fatih.catan.dto.TradeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,5 +66,10 @@ public class PlayerController {
     @PostMapping("useMonopoly")
     public void useMonopoly(@RequestBody DevDTO devDTO){
         playerService.monopoly(devDTO);
+    }
+
+    @PostMapping("tradeWithBank")
+    public void tradeWithBank(@RequestBody TradeDTO tradeDTO){
+        playerService.tradeWithBank(tradeDTO);
     }
 }

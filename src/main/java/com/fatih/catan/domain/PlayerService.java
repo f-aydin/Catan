@@ -2,6 +2,7 @@ package com.fatih.catan.domain;
 
 import com.fatih.catan.dto.BuildDTO;
 import com.fatih.catan.dto.DevDTO;
+import com.fatih.catan.dto.TradeDTO;
 import com.fatih.catan.repository.PlayerRepository;
 import com.fatih.catan.repository.TileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,8 +217,6 @@ public class PlayerService {
         subtractResourcesForDevCard(player);
         Card drawnCard = deck.drawCard();
         CardType drawnCardType = drawnCard.getType();
-        System.out.println(drawnCard);
-        System.out.println(drawnCardType);
         player.addCard(drawnCard);
         switch(drawnCardType){
             case KNIGHT -> placeRobber(0);
@@ -225,7 +224,7 @@ public class PlayerService {
                 player.addVictoryPoint();
                 playerRepository.save(player);
             }
-            case MONOPOLY, ROADBUILDING, YEAROFPLENTY -> { playerRepository.save(player);}
+            case MONOPOLY, ROADBUILDING, YEAROFPLENTY -> playerRepository.save(player);
         }
         return drawnCardType;
     }
@@ -255,10 +254,42 @@ public class PlayerService {
         Resource resourceToSteal = devDTO.getType();
         int amountOfResourcesToSteal = 0;
         for(Player player : allPlayers){
-            amountOfResourcesToSteal = amountOfResourcesToSteal + player.getWool();
+            switch(resourceToSteal){
+                case WOOL -> amountOfResourcesToSteal = amountOfResourcesToSteal + player.getWool();
+                case BRICK -> amountOfResourcesToSteal = amountOfResourcesToSteal + player.getBrick();
+                case GRAIN -> amountOfResourcesToSteal = amountOfResourcesToSteal + player.getGrain();
+                case ORE -> amountOfResourcesToSteal = amountOfResourcesToSteal + player.getOre();
+                case LUMBER -> amountOfResourcesToSteal = amountOfResourcesToSteal + player.getLumber();
+            }
+            player.setResourceToZero(resourceToSteal);
         }
-        allPlayers.forEach(player -> player.setResourceToZero(resourceToSteal));
+
         playerThatSteals.addResource(resourceToSteal, amountOfResourcesToSteal);
         playerRepository.saveAll(allPlayers);
+        playerRepository.save(playerThatSteals);
+    }
+
+    public Player whoHasWon(){
+        List<Player> players = playerRepository.findAll();
+        for(Player player : players) {
+            if(player.getVictoryPoints() >= 5){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public void tradeWithBank(TradeDTO tradeDTO) {
+        Player player = playerRepository.findById(tradeDTO.getPlayerTurn()).orElseThrow();
+        if(hasPlayerEnoughResourcesToTrade(tradeDTO, player)){
+            player.addResource(Resource.WOOL, -4);
+            player.addResource(Resource.GRAIN, 1);
+            playerRepository.save(player);
+        }
+
+    }
+
+    private static boolean hasPlayerEnoughResourcesToTrade(TradeDTO tradeDTO, Player player) {
+        return tradeDTO.getGiveWool() >= player.getWool() && tradeDTO.getGiveWool() == 4;
     }
 }
