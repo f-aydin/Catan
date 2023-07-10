@@ -2,6 +2,7 @@ import { HexGrid, Hexagon, Layout, Pattern, Text } from "react-hexgrid";
 import { useEffect, useState, MouseEvent } from "react";
 import board from '../icons/catan_tile.png'
 import Card from './Card'
+import TradingForm from './TradingForm'
 import Button from './Button'
 
 export function Board() {
@@ -13,7 +14,7 @@ export function Board() {
   const [buildingType, setBuildingType] = useState("SETTLEMENT");
   const [playerTurn, setPlayerTurn] = useState(1);
   const [diceRolled, setDiceRolled] = useState(false);
-  const [showCard, setShowCard] = useState(false);
+  const [tradingPopupVisible, setTradingPopupVisible] = useState(true);
   
 
   async function addByDiceRoll() {
@@ -76,8 +77,7 @@ export function Board() {
               Brick: {player.brick + " | "}
               Lumber: {player.lumber + " | "}
               Grain: {player.grain + " | "}
-              DevCards:
-              {player.devCards.map((card : any) => showCard && <Card cardType= {card.type} />)}
+              DevCards: {player.devCards.map((card : any) =>  <Card cardType={card.type} playerTurn={playerTurn} />)}
             </p>
           </li>
         </div>
@@ -112,7 +112,6 @@ export function Board() {
           break;
       }
     }
-
   }
 
   async function buildSettlement() {
@@ -179,43 +178,11 @@ export function Board() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: String(playerTurn)
-    }) 
-    const data = response.json();
-    if(await data == "KNIGHT"){
-      moveRobber();
-    } else if(await data == "YEAROFPLENTY"){
-      const resource = prompt("choose the resource to get from the bank: ");
-      if(resource != null){
-        getResourcesYearOfPlenty(resource.toUpperCase());
-      }
-    } else if(await data == "MONOPOLY"){
-      const resource = prompt("choose the resource to steal from all players: ")
-      if(resource != null){
-        getResourcesMonopoly(resource.toUpperCase());
-      }
-    }
+    })
   }
 
-  async function getResourcesYearOfPlenty(resource : String | null) {
-    const response = await fetch("http://localhost:8080/api/useYearOfPlenty", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        playerID: Number(playerTurn),
-        type: String(resource)
-      })
-    }) 
-  }
-
-  async function getResourcesMonopoly(resource : String | null) {
-    const response = await fetch("http://localhost:8080/api/useMonopoly", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        playerID: Number(playerTurn),
-        type: String(resource)
-      })
-    }) 
+  function handleTrade() {
+    setTradingPopupVisible(!tradingPopupVisible);
   }
 
   return (
@@ -259,6 +226,12 @@ export function Board() {
       <button onClick={buyDevelopmentCard}>Buy Development Card</button>
       <div id="hover">View Board: </div>
       <img id="catantiles" src={board}></img>
+
+      <div id="trade">
+        <button onClick={() => handleTrade()}>Trade</button>
+        {tradingPopupVisible && <TradingForm playerTurn = {playerTurn}/>}
+      </div>
+      
 
 <div style={{position: "relative", width: 900, height: 900}}>
       <HexGrid width={900} height={800} viewBox="-50 -50 100 100" style={{position: "absolute", top:0,left:0}}>
